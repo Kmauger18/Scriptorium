@@ -1,0 +1,120 @@
+/*
+VOICE : un atelier d’écriture, chaleureux et précis, qui parle à un auteur.
+IDEA : la conversation de téléphone qui devient une page de livre imprimée.
+PICTURE : un téléphone dont les bulles glissent vers une page de livre ouverte.
+COLOUR and TYPE : encre nocturne, violet de l’atelier, corail des bulles envoyées ; Fraunces pour les titres, Inter pour le texte.
+LAYOUT : bandeau d’ouverture plein écran, puis bandes pleine largeur qui alternent nuit et papier.
+*/
+:root{color-scheme:light dark;--night:#120f1f;--night2:#1c1830;--paper:light-dark(#fbfaf7,#16131f);--card:light-dark(#ffffff,#1f1b2c);--ink:light-dark(#18151f,#efecf6);--mute:light-dark(#5d5868,#a8a2b8);--line:light-dark(#e6e2ec,#2e2940);--acc:#6d4aff;--coral:#e8675c;--grey:#e9e9eb}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px}
+body{margin:0;background:var(--paper);color:var(--ink);font:16.5px/1.6 Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;overflow-x:clip}
+a{color:inherit}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;line-height:1.08;text-wrap:balance;margin:0}
+h2{font-size:clamp(28px,3.6vw,40px)}
+h3{font-size:20px;line-height:1.25}
+p{margin:0}
+.band{padding:clamp(40px,6vw,88px) max(5vw,18px)}
+.wrap{max-width:1180px;margin:0 auto}
+.lede{color:var(--mute);max-width:62ch;margin-top:12px}
+
+/* navigation */
+.nav{position:sticky;top:0;z-index:10;background:color-mix(in srgb,var(--night) 92%,transparent);backdrop-filter:blur(8px);color:#fff}
+.nav .wrap{display:flex;align-items:center;gap:18px;padding:12px max(5vw,18px);flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font:600 18px Fraunces,Georgia,serif}
+.brand img{width:30px;height:30px}
+.brand i{color:#b8a8ff}
+.nav nav{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.nav nav a{text-decoration:none;padding:8px 12px;border-radius:8px;color:#d7d2e8;font-size:14.5px}
+.nav nav a:hover,.nav nav a:focus-visible{background:#ffffff14;color:#fff}
+
+/* boutons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 20px;border-radius:12px;font:600 15.5px Inter,system-ui,sans-serif;text-decoration:none;border:1px solid transparent;cursor:pointer}
+.btn.pri{background:var(--acc);color:#fff;box-shadow:0 8px 22px -10px var(--acc)}
+.btn.pri:hover{background:#7d5dff}
+.btn.ghost{border-color:#ffffff40;color:#fff}
+.btn.ghost:hover{background:#ffffff12}
+.btn.line{border-color:var(--line);color:var(--ink);background:var(--card)}
+:focus-visible{outline:3px solid #b8a8ff;outline-offset:2px}
+
+/* ouverture */
+.hero{background:var(--night);color:#fff}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(24px,4vw,56px);align-items:center}
+.hero h1{font-size:clamp(40px,6vw,64px);letter-spacing:-.02em}
+.hero h1 i{color:#b8a8ff}
+.hero .lede{color:#c9c3dc;font-size:18px}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:26px}
+.note{font-size:13.5px;color:#9d96b3;margin-top:14px}
+.fig{position:relative;min-height:400px}
+.fig svg{position:absolute;inset:0;width:100%;height:100%}
+.flow{animation:flow 6s ease-in-out infinite}
+@keyframes flow{0%,15%{opacity:0;transform:translateX(-14px)}35%,85%{opacity:1;transform:none}100%{opacity:0}}
+@media(prefers-reduced-motion:reduce){.flow{animation:none}}
+
+/* types de livres */
+.kinds{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,250px),1fr));gap:14px;margin-top:30px}
+.kind{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px}
+.kind .k{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.kind .k span{width:38px;height:38px;border-radius:10px;background:color-mix(in srgb,var(--acc) 12%,var(--card));display:grid;place-items:center;font-size:19px;flex:none}
+.kind p{color:var(--mute);font-size:15px}
+.kind.main{grid-column:span 2;background:var(--night2);color:#fff;border-color:transparent}
+.kind.main p{color:#c9c3dc}
+@media(max-width:600px){.kind.main{grid-column:auto}}
+
+/* étapes */
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:30px;counter-reset:s}
+.step{border-top:3px solid var(--acc);padding-top:14px}
+.step b{display:block;font:600 19px Fraunces,Georgia,serif;margin-bottom:4px}
+.step p{color:var(--mute);font-size:15px}
+@media(max-width:800px){.steps{grid-template-columns:1fr}}
+
+/* script */
+.split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:start;margin-top:26px}
+@media(max-width:860px){.split,.hero .wrap{grid-template-columns:1fr}.fig{min-height:320px}}
+pre{margin:0;background:var(--night);color:#e7e2f6;border-radius:14px;padding:18px 20px;font:13.5px/1.65 ui-monospace,"SFMono-Regular",Consolas,monospace;overflow-x:auto;white-space:pre}
+pre .c{color:#b8a8ff}pre .t{color:#8fd3c7}pre .n{color:#ffb4ab}pre .s{color:#9d96b3}
+.phone{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:14px;max-width:380px;box-shadow:0 20px 50px -28px rgba(20,10,60,.5)}
+.phone .hd{text-align:center;font-size:13px;color:var(--mute);border-bottom:1px solid var(--line);padding:4px 0 10px;margin-bottom:10px}
+.phone .hd b{display:block;color:var(--ink);font-size:14.5px}
+.bub{max-width:82%;padding:8px 13px;border-radius:18px;margin:4px 0;font-size:14.5px;line-height:1.35;width:fit-content}
+.bub.r{margin-left:auto;background:var(--coral);color:#fff;border-bottom-right-radius:5px}
+.bub.l{background:var(--grey);color:#18151f;border-bottom-left-radius:5px}
+.bub.d{margin-left:auto;background:none;border:1.5px dashed var(--mute);color:var(--mute)}
+.bub.d small{display:block;font-size:11px;font-style:italic}
+.who{font-size:11.5px;color:var(--mute);margin:8px 8px 0}
+.rcv{text-align:right;font-size:11.5px;color:var(--mute);margin:2px 6px}
+.stamp{text-align:center;font-size:12px;font-weight:600;color:var(--mute);margin:8px 0}
+
+/* exports */
+.outs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:28px}
+.out{background:var(--card);padding:18px}
+.out b{display:block;font:600 22px Fraunces,Georgia,serif;margin-bottom:4px}
+.out p{color:var(--mute);font-size:14.5px}
+@media(max-width:860px){.outs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:480px){.outs{grid-template-columns:1fr}}
+
+/* données */
+.night{background:var(--night);color:#fff}
+.night .lede{color:#c9c3dc}
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:26px}
+.facts div{border-left:2px solid #b8a8ff;padding-left:14px}
+.facts b{display:block;margin-bottom:4px}
+.facts p{color:#c9c3dc;font-size:15px}
+@media(max-width:800px){.facts{grid-template-columns:1fr}}
+
+footer{padding:28px max(5vw,18px);color:var(--mute);font-size:14px;border-top:1px solid var(--line)}
+footer .wrap{display:flex;gap:12px;justify-content:space-between;flex-wrap:wrap}
+
+/* guide */
+.toc{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+.toc a{flex:none;text-decoration:none;padding:7px 12px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-size:14px}
+.gsec{margin-top:44px}
+.gsec>p{color:var(--mute);max-width:70ch;margin-top:8px}
+table{width:100%;border-collapse:collapse;margin-top:16px;font-size:15px;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:13px;color:var(--mute);font-weight:600;background:color-mix(in srgb,var(--acc) 6%,var(--card))}
+td code,li code,p code{font:13.5px ui-monospace,Consolas,monospace;background:color-mix(in srgb,var(--acc) 10%,transparent);padding:1px 6px;border-radius:5px;overflow-wrap:anywhere}
+ol.rules{margin:14px 0 0;padding-left:22px;max-width:76ch}
+ol.rules li{margin:8px 0}
+@media(max-width:600px){table{font-size:13px}.stack thead{display:none}.stack tr{display:grid;padding-block:10px;border-bottom:1px solid var(--line)}.stack td{display:flow-root;border:0;padding:3px 12px;padding-inline-start:8.5em}.stack td::before{content:attr(data-l);float:inline-start;width:7.5em;margin-inline-start:-8em;color:var(--mute);font-size:12px}}

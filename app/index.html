@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Scriptorium — l’atelier d’écriture de romans SMS, journaux manuscrits et livres ensorcelés. Mise en page KDP, PDF, EPUB et vidéo.">
+<meta name="theme-color" content="#0f1115">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="manifest" href="../manifest.webmanifest">
+<title>Scriptorium – l’atelier d’écriture de livres</title>
+<link rel="stylesheet" href="css/scriptorium.css">
+<style id="lay"></style>
+<style id="xcss"></style>
+<style id="bkA"></style>
+<style id="bkP"></style>
+<style id="pgs"></style>
+</head>
+<body>
+<aside id="side">
+ <div class="brand"><span class="logo">S</span><span>Script<b>orium</b></span> <small id="kbadge"></small></div>
+ <nav class="tabs" aria-label="Panneaux">
+  <button data-tab="0" class="on"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg>Plan</button>
+  <button data-tab="1"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0M16 4.7a3.5 3.5 0 010 6.6M18.5 20a6.5 6.5 0 00-2.6-5.2"/></svg>Persos</button>
+  <button data-tab="2"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 012-2h13v15H6a2 2 0 00-2 2zM4 20a2 2 0 012-2h13"/></svg>Livre</button>
+  <button data-tab="3"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg>Style</button>
+  <button data-tab="4"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16"/></svg>Fichier</button>
+ </nav>
+
+ <div class="tp on" data-p="0">
+  <h4>Chapitres</h4><div id="chaps"></div><button class="add" id="addChap">+ Nouveau chapitre</button><div id="labg"></div>
+  <div class="small">Glissez un chapitre pour le réordonner, ou glissez des messages (poignée ⋮⋮) sur un chapitre pour les y déplacer.</div>
+  <h4>Carnet de notes</h4>
+  <textarea data-b="notes" rows="7" placeholder="Idées, intrigue, rappels… (jamais imprimé)" aria-label="Carnet de notes"></textarea>
+ </div>
+
+ <div class="tp" data-p="1">
+  <h4>Personnages</h4>
+  <select id="palSel" aria-label="Palette de couleurs"></select>
+  <div id="chars"></div><button class="add" id="addChar">+ Nouveau personnage</button>
+  <div class="small">D / G = côté des bulles. Cliquez sur l’avatar pour choisir un emoji ou une photo.</div>
+ </div>
+
+ <div class="tp" data-p="2">
+  <h4>Livre</h4>
+  <input data-b="meta.title" placeholder="Titre" aria-label="Titre du livre">
+  <input data-b="meta.sub" placeholder="Sous-titre" aria-label="Sous-titre">
+  <input data-b="meta.author" placeholder="Auteur" aria-label="Auteur">
+  <div class="two"><label>Année<input type="number" data-b="meta.year"></label>
+   <label>Langue<select data-b="meta.lang"><option value="fr">Français</option><option value="en">English</option><option value="es">Español</option><option value="de">Deutsch</option><option value="it">Italiano</option></select></label></div>
+  <h4>Couverture</h4>
+  <label>Modèle<select data-b="meta.cover.style" id="covSel"></select></label>
+  <div class="two"><label>Couleur 1<input type="color" data-b="meta.cover.c1"></label><label>Couleur 2<input type="color" data-b="meta.cover.c2"></label></div>
+  <div class="tools"><button id="bCvImg">Choisir une image</button><button id="bCvNo">Retirer l’image</button></div>
+  <h4>Pages du livre</h4>
+  <label>Dédicace<textarea data-b="meta.dedic" rows="2"></textarea></label>
+  <label>Épigraphe<textarea data-b="meta.epi" rows="2"></textarea></label>
+  <label>Mentions légales (ISBN, éditeur…)<textarea data-b="meta.copy" rows="2"></textarea></label>
+  <label>Résumé (4ᵉ de couverture)<textarea data-b="meta.blurb" rows="3"></textarea></label>
+  <label>Remerciements<textarea data-b="meta.thanks" rows="3"></textarea></label>
+  <label>À propos de l’auteur<textarea data-b="meta.about" rows="3"></textarea></label>
+    <h4>Amazon KDP</h4>
+  <label>Papier<select data-b="set.paper"><option value="white">Blanc — 0,0572 mm / page</option><option value="cream">Crème — 0,0635 mm / page</option><option value="color">Couleur — 0,0596 mm / page</option></select></label>
+  <label>Marges intérieures<select data-b="set.gmode"><option value="kdp">Reliure automatique (minimum KDP selon les pages)</option><option value="uni">Identiques partout</option></select></label>
+  <label>Numéros de page<select data-b="set.pnpos"><option value="center">Centrés</option><option value="outer">Côté extérieur</option></select></label>
+  <label class="ck"><input type="checkbox" data-b="set.recto"> Les chapitres commencent sur une page impaire (à droite)</label>
+  <label>Miroir<select data-b="set.mirror"><option value="off">Aucun (seuls les blocs marqués sont retournés)</option><option value="book">Toutes les pages en miroir (lecture devant un miroir)</option></select></label>
+  <label class="ck"><input type="checkbox" data-b="set.cvPdf"> Inclure la couverture dans le PDF</label>
+  <div id="kdpBox" class="kdp"></div>
+  <div class="tools"><button id="bKdpCalc">↻ Recalculer</button><button id="bKdpSvg">Gabarit de couverture (SVG)</button></div>
+<h4>Objectif d’écriture</h4>
+  <label>Mots par jour<input type="number" min="0" data-b="goal.target"></label>
+ </div>
+
+ <div class="tp" data-p="3">
+  <div class="mk mk-sms">
+  <h4>Style des bulles</h4>
+  <div class="sty" id="styBtns">
+   <button data-sty="ios">Messages</button><button data-sty="wa">Discussion</button>
+   <button data-sty="msn">Messenger</button><button data-sty="disc">Salon (plat)</button>
+   <button data-sty="min">Papier N&amp;B</button><button data-sty="retro">SMS rétro</button>
+  </div>
+  <h4>Bulles</h4>
+  <label>Taille du texte <output data-o="set.fs"></output><input type="range" min="12" max="24" data-b="set.fs"></label>
+  <label>Police<select data-b="set.font"><option value="sys">Système</option><option value="serif">Serif (Georgia)</option><option value="mono">Machine à écrire</option><option value="round">Arrondie</option><option value="hand">Manuscrite</option></select></label>
+  <label>Arrondi <output data-o="set.radius"></output><input type="range" min="2" max="30" data-b="set.radius"></label>
+  <label>Largeur max <output data-o="set.width"></output><input type="range" min="50" max="96" data-b="set.width"></label>
+  <label>Espacement <output data-o="set.gap"></output><input type="range" min="0" max="14" data-b="set.gap"></label>
+  <label class="ck"><input type="checkbox" data-b="set.tails"> Queue de bulle</label>
+  <label class="ck"><input type="checkbox" data-b="set.names"> Noms au-dessus</label>
+  <label class="ck"><input type="checkbox" data-b="set.avatars"> Avatars à côté des bulles</label>
+  <label class="ck"><input type="checkbox" data-b="set.times"> Heures sous les bulles</label>
+  <label class="ck"><input type="checkbox" data-b="set.read"> Accusé « Lu » sous le dernier message</label>
+  <input data-b="set.readText" placeholder="Texte de l’accusé (Lu, Vu, Distribué…)" aria-label="Texte de l’accusé">
+  <h4>Conversation</h4>
+  <label class="ck"><input type="checkbox" data-b="set.header"> En-tête (contact, avatars)</label>
+  <label class="ck"><input type="checkbox" data-b="set.status"> Barre d’état du téléphone</label>
+  <label>Fond<select data-b="set.wall"><option value="none">Aucun</option><option value="color">Couleur unie</option><option value="dots">Pois</option><option value="grid">Quadrillage</option><option value="diag">Rayures</option><option value="image">Image</option></select></label>
+  <label>Couleur du fond<input type="color" data-b="set.wallc"></label>
+  <div class="tools"><button id="bWall">Image de fond…</button><button id="bWallNo">Retirer</button></div>
+  </div>
+  <div class="mk mk-journal" hidden>
+  <h4>Écriture manuscrite</h4>
+  <label>Écriture<select data-b="set.jfont"><option value="caveat">Caveat (fluide)</option><option value="apple">Homemade Apple (stylo)</option><option value="beanie">Reenie Beanie (griffonné)</option></select></label>
+  <label>Taille <output data-o="set.jsize"></output><input type="range" min="16" max="36" data-b="set.jsize"></label>
+  <label>Encre (si spectre désactivé)<input type="color" data-b="set.jink"></label>
+  <label>Papier<select data-b="set.jpaper"><option value="ruled">Ligné</option><option value="grid">Quadrillé</option><option value="dots">Pointillé</option><option value="plain">Uni</option><option value="kraft">Kraft</option></select></label>
+  <label class="ck"><input type="checkbox" data-b="set.jline"> Marge rouge (papier ligné)</label><label class="ck"><input type="checkbox" data-b="set.jtape"> Scotch sur les Polaroïds</label><label class="ck"><input type="checkbox" data-b="set.janim"> Écriture animée en lecture</label>
+  <h4>Polaroïds évolutifs</h4>
+  <label class="ck"><input type="checkbox" data-b="set.evoDev"> Les photos se développent au fil du livre</label>
+  <label>Développement au début (%) <output data-o="set.dev0"></output><input type="range" min="0" max="100" data-b="set.dev0"></label><label>Développement à la fin (%) <output data-o="set.dev1"></output><input type="range" min="0" max="100" data-b="set.dev1"></label>
+  <label class="ck"><input type="checkbox" data-b="set.evoAge"> Les photos vieillissent (jaunissent) au fil du livre</label>
+  <label>Vieillissement au début (%) <output data-o="set.age0"></output><input type="range" min="0" max="100" data-b="set.age0"></label><label>Vieillissement à la fin (%) <output data-o="set.age1"></output><input type="range" min="0" max="100" data-b="set.age1"></label>
+  <h4>Spectre de couleur progressif</h4>
+  <label class="ck"><input type="checkbox" data-b="set.spec"> Activer le spectre</label>
+  <div class="tools" id="specPre"></div><div id="specPrev" style="height:14px;border-radius:7px;margin:6px 0"></div>
+  <label>Teinte au début <output data-o="set.sh0"></output><input type="range" min="0" max="720" data-b="set.sh0"></label><label>Teinte à la fin <output data-o="set.sh1"></output><input type="range" min="0" max="720" data-b="set.sh1"></label>
+  <label>Saturation au début (%) <output data-o="set.ss0"></output><input type="range" min="0" max="100" data-b="set.ss0"></label><label>Saturation à la fin (%) <output data-o="set.ss1"></output><input type="range" min="0" max="100" data-b="set.ss1"></label>
+  <label>Luminosité de l’encre (%) <output data-o="set.sl"></output><input type="range" min="15" max="60" data-b="set.sl"></label>
+  <label class="ck"><input type="checkbox" data-b="set.specInk"> Colorer l’encre</label><label class="ck"><input type="checkbox" data-b="set.specPaper"> Teinter le papier</label><label class="ck"><input type="checkbox" data-b="set.specTape"> Colorer scotch et post-it</label><label class="ck"><input type="checkbox" data-b="set.specStrip"> Bande de couleur sur la page</label>
+ </div>
+ <div class="mk mk-spell" hidden>
+  <h4>Livre ensorcelé</h4>
+  <label>Ambiance du livre<select data-b="set.stheme"><option value="parchemin">Parchemin</option><option value="nuit">Nuit étoilée</option><option value="sang">Cramoisi</option><option value="givre">Givre</option><option value="foret">Forêt enchantée</option><option value="or">Or &amp; ivoire</option></select></label>
+  <label>Typographie<select data-b="set.sfont"><option value="fell">Fell + Cinzel</option><option value="fraktur">Fell + Gothique</option><option value="serif">Georgia + Cinzel</option></select></label>
+  <label>Taille du texte <output data-o="set.sfs"></output><input type="range" min="14" max="26" data-b="set.sfs"></label>
+  <label class="ck"><input type="checkbox" data-b="set.sdrop"> Lettrine</label><label class="ck"><input type="checkbox" data-b="set.sauto"> Effets automatiques sur les mots (feu, glace, ombre…)</label><label class="ck"><input type="checkbox" data-b="set.smotion"> Effets animés</label><label class="ck"><input type="checkbox" data-b="set.sparts"> Particules d’ambiance (lecture)</label><label class="ck"><input type="checkbox" data-b="set.sreveal"> Apparition progressive (lecture)</label>
+  <p class="hint">La mise en page réagit : phrases courtes centrées, cris en majuscules agrandis, questions en italique, dialogues en retrait, texte qui épouse les images rondes.</p>
+ </div>
+ <div class="mk mk-pal" hidden>
+  <h4>Palimpseste</h4>
+  <label>Visibilité du texte effacé (impression) <output data-o="set.palFade"></output><input type="range" min="15" max="90" data-b="set.palFade"></label>
+  <p class="hint">Chaque bloc « Palimpseste » superpose un texte récent et un texte gratté dessous. En lecture, cliquez pour gratter la surface et révéler l’ancien texte.</p>
+ </div>
+ <div class="mk mk-dos" hidden>
+  <h4>Dossier d’enquête</h4>
+  <label class="ck"><input type="checkbox" data-b="set.dosReveal"> Caviardages révélables d’un clic (lecture écran)</label>
+  <p class="hint">Entourez un passage de [[doubles crochets]] pour le caviarder. À l’impression il reste noir.</p>
+ </div>
+ <div class="mk mk-lab" hidden>
+  <h4>Labyrinthe à renvois</h4>
+  <p class="hint">Chaque chapitre est une case numérotée. Un bloc « Choix » renvoie vers un autre chapitre : en lecture un lien, sur papier « page N » (numéro réel, recalculé à la mise en page). Le graphe du Plan signale les chapitres orphelins.</p>
+ </div>
+ <div class="mk mk-fold" hidden>
+  <h4>Pliage</h4>
+  <p class="hint">Chaque bloc « Pliage » a un haut, un bas et un verso. En lecture, « Plier / déplier » simule le pli en 3D ; sur papier le verso est imprimé tête en bas sous le trait de pli.</p>
+ </div>
+ <div class="mk mk-spi" hidden>
+  <h4>Spirale &amp; calligrammes</h4>
+  <p class="hint">Le texte suit une forme (spirale, cercle, vague, cœur). En lecture, « Pivoter » tourne la forme par quarts de tour.</p>
+ </div>
+ <div class="mk mk-par" hidden>
+  <h4>Partition &amp; rythme</h4>
+  <label>Tempo par défaut <output data-o="set.bpm"></output><input type="range" min="40" max="200" data-b="set.bpm"></label>
+  <p class="hint">Un mot = une noire. « mot_ » dure deux temps, « mot__ » trois, « . » est un silence, « | » force une barre de mesure.</p>
+ </div>
+ <div class="mk mk-ana" hidden>
+  <h4>Double exposition</h4>
+  <label>Encres<select data-b="set.anaInk"><option value="process">Pures (rouge / cyan)</option><option value="soft">Imprimante (adoucies)</option><option value="rgb">Écran</option></select></label>
+  <label>Superposition<select data-b="set.anaMix"><option value="normal">Rouge et cyan purs (pas de noir)</option><option value="multiply">Réaliste impression (noir où ça se croise)</option></select></label>
+  <label>Intensité des couches (%) <output data-o="set.ghost"></output><input type="range" min="40" max="100" data-b="set.ghost"></label>
+  <label>Relief (décalage) <output data-o="set.depth"></output><input type="range" min="0" max="10" data-b="set.depth"></label>
+  <label>Police<select data-b="set.afont"><option value="serif">Serif</option><option value="sans">Sans</option><option value="mono">Machine à écrire</option></select></label>
+  <label>Taille du texte <output data-o="set.afs"></output><input type="range" min="13" max="24" data-b="set.afs"></label>
+  <label class="ck"><input type="checkbox" data-b="set.anaNotice"> Page « Avant de lire »</label><label class="ck"><input type="checkbox" data-b="set.anaCalib"> Mire d’étalonnage</label>
+  <p class="hint">Rouge = visible avec le verre cyan · Cyan = visible avec le verre rouge. Le bouton 🕶️ de la barre simule les lunettes.</p>
+ </div>
+  <h4>Application</h4>
+  <label>Thème<select data-b="set.theme"><option value="auto">Automatique</option><option value="light">Clair</option><option value="dark">Sombre</option></select></label>
+  <label>Couleur d’accent</label><div class="sw" id="accSw"></div>
+  <label class="ck"><input type="checkbox" data-b="set.enter"> Entrée envoie (sinon Ctrl+Entrée)</label>
+  <h4>Mise en page (PDF / impression)</h4>
+  <label>Format<select data-b="set.page"><option value="11x17">Poche 11 × 17 cm</option><option value="A6">A6</option><option value="B6">B6</option><option value="A5">A5</option><option value="5x8">5 × 8 po</option><option value="6x9">6 × 9 po</option><option value="A4">A4</option><option value="letter">Lettre US</option></select></label>
+  <label>Marges <output data-o="set.margin"></output><input type="range" min="6" max="30" data-b="set.margin"></label>
+  <label class="ck"><input type="checkbox" data-b="set.cover"> Couverture</label>
+  <label class="ck"><input type="checkbox" data-b="set.front"> Titre, mentions, dédicace</label>
+  <label class="ck"><input type="checkbox" data-b="set.toc"> Table des matières</label>
+  <label class="ck"><input type="checkbox" data-b="set.partpg"> Page de titre pour chaque partie</label>
+  <label class="ck"><input type="checkbox" data-b="set.back"> Résumé, remerciements, auteur</label>
+  <label class="ck"><input type="checkbox" data-b="set.pnum"> Numéros de page</label>
+  <label class="ck"><input type="checkbox" data-b="set.runhead"> Titre courant en haut de page</label>
+ </div>
+
+ <div class="tp" data-p="4">
+  <h4>Exporter</h4>
+  <div class="tools">
+   <button class="pri" id="bPrint">Imprimer / enregistrer en PDF</button>
+   <button id="bHtmlP">Pages (HTML prêt à imprimer)</button><button id="bEpub">EPUB (liseuse)</button><button id="bHtml">Page web</button>
+   <button class="pri" id="bMp4">🎬 Vidéo MP4 (la conversation se crée)</button><button id="bMd">Markdown</button><button id="bTxt">Script texte</button>
+  </div>
+  <h4>Sauvegarde</h4>
+  <div class="tools">
+   <button id="bJson">Exporter le livre (.json)</button><button id="bImp">Importer…</button>
+   <button id="bScript">Coller un script</button><button id="bWA">Discussion WhatsApp</button>
+   <button id="bHist" class="wide">Historique des versions</button>
+  </div>
+  <div class="small" id="expInfo"></div>
+  <div class="small">Tout est enregistré automatiquement dans ce navigateur, sur cet appareil. Exportez le livre (.json) régulièrement : c’est votre vraie sauvegarde.</div>
+  <h4>Divers</h4>
+  <div class="tools"><button id="bStats">Statistiques</button><button id="bKeys">Raccourcis</button><button id="bLib2" class="wide">📚 Bibliothèque de livres</button><button id="bNew" class="wide">＋ Nouveau livre…</button></div>
+ </div>
+</aside>
+
+<main id="main">
+ <header class="head">
+  <button class="ib" id="bFocus" title="Mode sans distraction (Ctrl+Maj+F)" aria-label="Mode sans distraction"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg></button>
+  <button class="ib" id="bHome" title="Accueil" aria-label="Accueil"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8M5 9.5V20h14V9.5"/></svg></button>
+  <button class="ib" id="bLib" title="Bibliothèque de livres" aria-label="Bibliothèque"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h4v16H4zM10 4h4v16h-4zM16.3 5.5l3.8 1-3 13-3.8-1z"/></svg></button>
+  <button class="ib" id="bFm" title="Masquer / afficher le panneau (Ctrl+.)" aria-label="Masquer ou afficher le panneau"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M9 4v16"/></svg></button>
+  <input class="chtitle" id="ct" aria-label="Titre du chapitre" placeholder="Titre du chapitre">
+  <div class="seg" id="seg" role="group" aria-label="Vue">
+   <button data-v="write" class="on">Écrire</button><button data-v="plan">Plan</button><button data-v="read">Lecture</button><button data-v="book">Livre</button>
+  </div>
+  <div class="sbox"><input class="srch" id="q" type="search" placeholder="Rechercher…" aria-label="Rechercher dans le livre"><span id="qc"></span><button class="ib sm" id="qp" aria-label="Résultat précédent"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><button class="ib sm" id="qn" aria-label="Résultat suivant"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg></button></div>
+  <button class="ib" id="bUn" title="Annuler (Ctrl+Z)" aria-label="Annuler"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3"/></svg></button>
+  <button class="ib" id="bRe" title="Rétablir (Ctrl+Maj+Z)" aria-label="Rétablir"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5M20 9H10a6 6 0 000 12h3"/></svg></button>
+  <button class="ib" id="bK" title="Palette de commandes (Ctrl+K)" aria-label="Palette de commandes"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6a3 3 0 10-3 3h12a3 3 0 10-3-3v12a3 3 0 103-3H6a3 3 0 103 3z"/></svg></button>
+  <button class="stat" id="stat" title="Statistiques"></button>
+ </header>
+ <div id="stage">
+  <section class="view" id="vWrite">
+   <div id="chat"><div id="phone" class="bk"><div id="pt"></div><div class="pg" id="page"></div></div></div>
+   <div id="selbar" hidden></div>
+   <div class="composer"><div class="cin">
+    <div id="cbar"></div><div class="chips" id="chips"></div>
+    <div class="send">
+     <button class="ib" id="bPlus" title="Insérer : image, vocal, appel, lieu…" aria-label="Insérer">＋</button>
+     <textarea id="ta" rows="1" placeholder="Écrire un message…" aria-label="Message"></textarea>
+     <button class="ib" id="bTy" title="Indicateur de saisie" aria-label="Indicateur de saisie">···</button>
+     <button class="go" id="go" aria-label="Envoyer">↑</button>
+    </div>
+    <div class="hint" id="hint"></div>
+   </div></div>
+  </section>
+  <section class="view" id="vX" hidden>
+   <div class="xbar" id="xbar"></div>
+   <div id="xchat"><div id="xpage" class="xp"></div></div>
+   <div class="composer" id="xcomp"></div>
+  </section>
+  <section class="view" id="vXRead" hidden>
+   <div class="rbar"><button id="xrPrev" aria-label="Chapitre précédent">◀</button><b id="xrtitle"></b><button id="xrNext" aria-label="Chapitre suivant">▶</button><button class="acc" id="xrReplay">↺ Rejouer</button><span id="xrx"></span></div>
+   <div id="xrbox"><div id="xrpage"></div></div>
+  </section>
+  <section class="view" id="vPlan" hidden>
+   <div class="rbar"><b>Plan du livre</b><select id="pf" aria-label="Filtrer par statut"><option value="all">Tous les statuts</option><option value="draft">Brouillons</option><option value="review">À relire</option><option value="final">Terminés</option></select><span id="pinfo" class="small"></span></div>
+   <div class="pgrid" id="pgrid"></div>
+  </section>
+  <section class="view" id="vRead" hidden>
+   <div class="rbar"><button class="acc" id="rPlay">▶ Lire</button><button id="rNext">Suivant ⏭</button><button id="rAll">Tout afficher</button><label>Vitesse <input type="range" id="rsp" min="0.5" max="4" step="0.5" value="1.5"></label><b id="rtitle"></b></div>
+   <div id="rchat"><div id="rphone" class="bk"><div id="rpt"></div><div class="pg" id="rpage"></div></div></div>
+  </section>
+  <section class="view" id="vBook" hidden>
+   <div class="rbar"><b>Aperçu du livre</b><span class="small">Mise en page telle qu’exportée (PDF, EPUB, web).</span><span class="seg2" id="bkMode"><button data-m="flow">Continu</button><button data-m="pages">Pages</button><button data-m="spread">Double page</button></span><label class="small">Zoom <input type="range" id="bkZ" min="0" max="150" value="0" title="0 = ajusté"></label><span id="bkInfo" class="small"></span><span id="bkx"></span><button class="acc" id="bPrint2">Imprimer / PDF</button></div>
+   <div class="bwrap" id="bwrap"></div>
+  </section>
+ </div>
+</main>
+
+<dialog id="md"><form id="mdForm"><h3 id="mdT"></h3><div id="mdB" class="frm"></div><menu><button type="button" id="mdNo">Annuler</button><button type="button" class="ok" id="mdOk">OK</button></menu></form></dialog>
+<dialog id="pal"><input id="pi" placeholder="Taper une commande… (chapitre, export, style, personnage)" aria-label="Commande"><div id="pl" role="listbox"></div></dialog>
+<div id="pop" hidden></div>
+<div id="toasts" aria-live="polite"></div>
+<div id="pr"></div>
+<script src="js/fonts.js"></script>
+<script src="js/scriptorium.js"></script>
+<script>if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('../sw.js').catch(()=>{})</script>
+</body>
+</html>

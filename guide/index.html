@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Guide — Scriptorium</title>
+<meta name="description" content="Guide de Scriptorium : syntaxe des scripts de roman SMS, règles, sauvegarde et publication.">
+<meta name="theme-color" content="#120f1f">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/site.css">
+<script>new MutationObserver(()=>{for(const c of document.querySelectorAll('.stack td:not([data-l])')){let i=0,p=c;while(p=p.previousElementSibling)i+=p.colSpan;c.dataset.l=c.closest('table').rows[0].cells[i]?.textContent||''}}).observe(document,{childList:true,subtree:true})</script>
+</head>
+<body>
+<header class="nav"><div class="wrap">
+ <a class="brand" href="../"><img src="../assets/icon.svg" alt=""><span>Script<i>orium</i></span></a>
+ <nav aria-label="Sections"><a href="../">Accueil</a><a href="../app/">Ouvrir l’atelier</a></nav>
+</div></header>
+
+<main class="band"><div class="wrap">
+ <h1 style="font-size:clamp(36px,5vw,52px)">Guide de l’atelier</h1>
+ <p class="lede">Tout ce qu’il faut pour écrire un roman SMS dans Scriptorium, à la main ou en collant un script.</p>
+ <div class="toc"><a href="#demarrer">Démarrer</a><a href="#syntaxe">Syntaxe des scripts</a><a href="#regles">Règles</a><a href="#ia">Écrire avec une IA</a><a href="#sauvegarde">Sauvegarde</a><a href="#publier">Publier</a></div>
+
+ <section class="gsec" id="demarrer">
+  <h2>Démarrer</h2>
+  <ol class="rules">
+   <li>Ouvrez l’atelier et choisissez <b>Nouveau livre → Roman SMS</b>.</li>
+   <li>Dans l’onglet <b>Persos</b>, créez vos personnages. Le bouton <b>D / G</b> choisit le côté des bulles : à droite, le propriétaire du téléphone ; à gauche, ses contacts.</li>
+   <li>Écrivez bulle par bulle dans la zone du bas, ou passez par <b>＋ → Coller un script</b> pour ajouter un chapitre entier d’un coup.</li>
+   <li>Vérifiez le rendu dans <b>Lecture</b> (les messages arrivent un à un) et dans <b>Livre</b> (pages réelles).</li>
+  </ol>
+ </section>
+
+ <section class="gsec" id="syntaxe">
+  <h2>Syntaxe des scripts</h2>
+  <p>Une ligne = un élément. Les lignes vides sont ignorées.</p>
+  <table class="stack">
+   <thead><tr><th>Pour obtenir</th><th>Écrire</th><th>Exemple</th></tr></thead>
+   <tbody>
+    <tr><td>Un chapitre</td><td><code># Titre</code></td><td><code># Jour 3 — Pompon</code></td></tr>
+    <tr><td>Une conversation</td><td><code>=== Nom1, Nom2 | Nom affiché | sous-titre</code></td><td><code>=== Chloé, Léa | Bestie 🚨 | en ligne</code></td></tr>
+    <tr><td>Le nom enregistré dans le téléphone</td><td><code>=== Nom1, Nom2 (Nom affiché)</code></td><td><code>=== Chloé, Mathis (Numéro Inconnu)</code></td></tr>
+    <tr><td>Une reprise de conversation</td><td><code>=== reprise Nom1, Nom2</code></td><td><code>=== reprise Chloé, Mathis</code></td></tr>
+    <tr><td>Un contact renommé</td><td>reprise avec un nouveau nom affiché</td><td><code>=== reprise Chloé, Mathis (Lui ✨) | Lui ✨</code></td></tr>
+    <tr><td>Un horodatage</td><td><code>[texte]</code></td><td><code>[Mardi 21:14]</code></td></tr>
+    <tr><td>Un message</td><td><code>Prénom: texte</code></td><td><code>Chloé: tu dors ?</code></td></tr>
+    <tr><td>Un message sur plusieurs lignes</td><td>lignes suivantes sans préfixe</td><td><code>Mathis: Règles.</code> puis <code>1. Pas de prénoms.</code></td></tr>
+    <tr><td>Quelqu’un qui écrit</td><td><code>Prénom: ...</code></td><td><code>Mathis: ...</code></td></tr>
+    <tr><td>Un message vocal</td><td><code>Prénom: (vocal durée)</code></td><td><code>Chloé: (vocal 0:47)</code></td></tr>
+    <tr><td>Un appel ou une visio</td><td><code>(appel durée)</code> · <code>(visio durée)</code> · <code>(appel manqué)</code></td><td><code>Léa: (appel manqué)</code></td></tr>
+    <tr><td>Une photo</td><td><code>Prénom: (photo: description | légende)</code></td><td><code>Chloé: (photo: Pompon endormi sur le clavier)</code></td></tr>
+    <tr><td>Une capture d’écran</td><td><code>Prénom: (capture: ce qu’on voit)</code></td><td><code>Chloé: (capture: la réponse « team ficus »)</code></td></tr>
+    <tr><td>Un brouillon effacé</td><td><code>Prénom: (brouillon: texte)</code></td><td><code>Mathis: (brouillon: Ne tombe pas amoureuse)</code></td></tr>
+    <tr><td>Un accusé sous le dernier message</td><td><code>&gt; texte</code></td><td><code>&gt; Lu à 03:10</code></td></tr>
+    <tr><td>Une localisation</td><td><code>Prénom: (lieu: nom)</code></td><td><code>Léa: (lieu: Parc des Lilas)</code></td></tr>
+    <tr><td>Un fichier</td><td><code>Prénom: (fichier: nom.ext)</code></td><td><code>Hugo: (fichier: facture.pdf)</code></td></tr>
+    <tr><td>Un lien</td><td><code>Prénom: (lien: titre | site)</code></td><td><code>Mathis: (lien: Playlist | musique.fr)</code></td></tr>
+    <tr><td>Une narration</td><td><code>* texte</code></td><td><code>* Elle fixa l’écran.</code></td></tr>
+    <tr><td>Un message système</td><td><code>! texte</code></td><td><code>! Hugo a quitté la conversation</code></td></tr>
+    <tr><td>Une note d’auteur, jamais imprimée</td><td><code>// texte</code></td><td><code>// à revoir</code></td></tr>
+    <tr><td>Un séparateur de scène</td><td><code>---</code></td><td><code>---</code></td></tr>
+   </tbody>
+  </table>
+  <p>Dans un message : <code>**gras**</code>, <code>*italique*</code>, <code>~~barré~~</code>, <code>__souligné__</code>. Un message fait uniquement d’emojis s’affiche en grand.</p>
+ </section>
+
+ <section class="gsec" id="regles">
+  <h2>Règles à respecter</h2>
+  <ol class="rules">
+   <li>Le prénom avant les deux-points est le vrai prénom du personnage, identique partout (24 caractères au plus : lettres, espaces, tirets, apostrophes, points). Un nouveau prénom crée un nouveau personnage.</li>
+   <li>Le nom de contact affiché dans un téléphone se règle seulement sur la ligne <code>===</code>, entre parenthèses. Une reprise sans parenthèses garde le dernier nom affiché.</li>
+   <li>Une ligne sans préfixe se colle au message précédent. Elle ne doit donc pas commencer par <code>*</code>, <code>!</code>, <code>[</code>, <code>&gt;</code>, <code>#</code> ou <code>//</code>.</li>
+   <li>Évitez un mot isolé suivi de deux-points en début de ligne (<code>Attention: …</code>) : il serait pris pour un personnage.</li>
+   <li>Chaque conversation commence sur une nouvelle page du livre imprimé.</li>
+   <li>Une photo ou une capture s’affiche dans un cadre avec sa description. Dans l’atelier, cliquez dessus pour la remplacer par la vraie image.</li>
+   <li>Les réactions (❤️) et les heures sous les bulles s’ajoutent ensuite dans l’atelier, en survolant une bulle.</li>
+  </ol>
+ </section>
+
+ <section class="gsec" id="ia">
+  <h2>Écrire avec une IA</h2>
+  <p>Le prompt « roman SMS » contient toute la syntaxe, les règles de style et une liste de vérification. Remplissez la section « Mon projet » en bas, puis collez-le dans votre IA : elle vous propose un plan, puis écrit le script chapitre par chapitre, prêt à coller dans l’atelier.</p>
+  <div class="cta"><a class="btn line" href="../docs/prompt-roman-sms.md">Ouvrir le prompt roman SMS</a></div>
+ </section>
+
+ <section class="gsec" id="sauvegarde">
+  <h2>Sauvegarde</h2>
+  <p>Vos livres sont enregistrés automatiquement dans le navigateur de cet appareil, et un point de restauration est créé toutes les quatre minutes (<b>Fichier → Historique des versions</b>). Si vous videz les données du navigateur, ils disparaissent : exportez régulièrement le livre en <b>.json</b>, c’est votre vraie sauvegarde. Le même fichier se réimporte sur un autre ordinateur.</p>
+ </section>
+
+ <section class="gsec" id="publier">
+  <h2>Publier</h2>
+  <p>Dans <b>Livre</b>, choisissez le format (poche 11 × 17 cm pour un roman SMS), le papier et les marges. Le panneau Amazon KDP calcule la marge de reliure selon le nombre de pages, l’épaisseur de la tranche et la taille de la couverture à plat, et fournit un gabarit de couverture en SVG. Le bouton <b>Imprimer / PDF</b> produit le fichier intérieur ; l’onglet <b>Fichier</b> exporte aussi l’EPUB, la vidéo MP4, la page web et le script texte.</p>
+ </section>
+</div></main>
+
+<footer><div class="wrap"><span>Scriptorium — un atelier de Kéliann Mauger</span><span><a href="../">Accueil</a> · <a href="../app/">Ouvrir l’atelier</a></span></div></footer>
+<script>{if('serviceWorker' in navigator)navigator.serviceWorker.register('../sw.js').catch(()=>{})}</script>
+</body>
+</html>
