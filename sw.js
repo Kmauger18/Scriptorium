@@ -1,5 +1,5 @@
 /* Scriptorium — fonctionnement hors ligne. Changez VERSION à chaque mise à jour du site. */
-const VERSION = 'scriptorium-v2';
+const VERSION = 'scriptorium-v3';
 const FILES = ['./', './index.html', './guide/', './guide/index.html', './app/', './app/index.html',
   './app/css/scriptorium.css', './app/js/fonts.js', './app/js/scriptorium.js',
   './assets/icon.svg', './assets/site.css', './manifest.webmanifest', './docs/prompt-roman-sms.md'];
@@ -12,7 +12,7 @@ self.addEventListener('activate', e => {
 /* Réseau d’abord (pour toujours avoir la dernière version), cache si hors ligne. */
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET' || new URL(e.request.url).origin !== location.origin) return;
-  e.respondWith(fetch(e.request).then(r => {
+  e.respondWith(fetch(e.request,{cache:'no-cache'}).then(r => {
     const copy = r.clone(); caches.open(VERSION).then(c => c.put(e.request, copy)); return r;
   }).catch(() => caches.match(e.request, { ignoreSearch: true })));
 });
