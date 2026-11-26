@@ -148,7 +148,7 @@ function bookCSS(s,th,P,noImg){
  a('.lc','width:200px;max-width:100%');
  a('.lc .mp','height:84px;border-radius:'+Math.max(R-6,4)+'px;background-color:#cfe5d0;background-image:linear-gradient(115deg,transparent 40%,#ffffff 41%,#ffffff 45%,transparent 46%),linear-gradient(20deg,transparent 55%,#ffe39a 56%,#ffe39a 60%,transparent 61%);display:flex;align-items:center;justify-content:center;font-size:1.8em');
  a('.lc b','display:block;margin-top:5px');
- a('.b.img','padding:3px;max-width:100%');a('.b.img img','display:block;max-width:100%;max-height:340px;border-radius:'+Math.max(R-3,3)+'px');a('.b.img .cap','padding:5px 10px 3px');
+ a('.b.img','padding:3px;max-width:100%');a('.b.img:has(.imph)','background:transparent!important;padding:0');a('.b.img img','display:block;max-width:100%;max-height:340px;border-radius:'+Math.max(R-3,3)+'px');a('.b.img .cap','padding:5px 10px 3px');
  a('.dots','display:flex;gap:4px;padding:13px 16px');a('.dots i','width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.6;display:block');
  a('.stamp,.narr,.sys,.sep','outline:none;text-align:center;white-space:pre-wrap');
  a('.stamp','font-size:.78em;font-weight:600;color:'+mu+(st==='wa'?';background:rgba(120,120,120,.18);padding:3px 12px;border-radius:8px':''));
@@ -163,7 +163,7 @@ function bookCSS(s,th,P,noImg){
  a('.hd b','color:'+th.ink+';font-size:14px');
  a('.it.rk','margin-top:2px');a('.rcv','font-size:.72em;color:'+mu+';margin:0 6px;outline:none;text-align:right');
  a('.b.draft','background:transparent!important;border:1.5px dashed '+mu+'!important;color:'+mu+'!important;box-shadow:none!important');a('.b.draft .dl','display:block;font-size:.72em;font-style:italic;margin-bottom:2px;opacity:.9');a('.b.draft s','text-decoration-thickness:1px;opacity:.85');
- a('.imph','width:220px;max-width:100%;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:10px 12px;box-sizing:border-box;border-radius:'+Math.max(R-3,3)+'px;background:rgba(255,255,255,.55);color:#3a3f4c;font-size:.82em;line-height:1.3;white-space:normal');a('.imph.cap9','width:170px;aspect-ratio:3/4');a('.imph .imi','font-size:2em;line-height:1');a('.imph .imt','font-style:italic');
+ a('.imph','width:220px;max-width:100%;aspect-ratio:4/3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center;padding:10px 12px;box-sizing:border-box;border-radius:'+Math.max(R-3,3)+'px;background:#f4f4f6;border:1px solid rgba(0,0,0,.08);color:#3a3f4c;font-size:.82em;line-height:1.3;white-space:normal');a('.imph.cap9','width:170px;aspect-ratio:3/4');a('.imph .imi','font-size:2em;line-height:1');a('.imph .imt','font-style:italic');
  a('.rcp','opacity:.5');a('.rcl','align-self:center;font-size:.72em;color:'+mu+';letter-spacing:.06em;margin-top:6px');a('.rcs','align-self:stretch;border-top:1px dashed '+th.line+';margin-top:14px');
  return L.join('\n')}
 
@@ -221,7 +221,7 @@ function convParts(c){let r=[];
  if(!r.length)r=S.chars.slice(0,2);return r.slice(0,6)}
 function headEls(c,cx){const o=[],s=S.set;
  if(s.status)o.push(h('div',{class:'sb'},[h('span',{},'9:41'),h('span',{},'▂▄▆ ▮')]));
- if(s.header){const P=convParts(c),al=c.alias||{},nm=c.conv||P.map(x=>al[x.id]||x.name).join(', ');
+ if(s.header){const P0=convParts(c),PL=P0.filter(x=>x.side!=='right'),P=PL.length?PL:P0,al=c.alias||{},nm=c.conv||P.map(x=>al[x.id]||x.name).join(', ');
   o.push(h('div',{class:'hd'},[h('div',{class:'avs2'},P.map(x=>{const i=h('i');i.style.background=x.color;i.style.color=ink(x.color);const u=x.av&&cx.src(x.av);if(u)i.append(h('img',{src:u,alt:''}));else i.textContent=x.emoji||(al[x.id]||x.name||'?')[0].toUpperCase();return i})),h('b',{},nm),c.sub?h('span',{},c.sub):null]))}
  return o}
 
@@ -250,7 +250,7 @@ function node(m,i,L,cx){
  if(kind!=='msg'){el.append(t)}
  else{
   const col=h('div',{class:'col'+(m.react?' re':'')});
-  if(s.names&&first)col.append(h('div',{class:'who'},dispName(c,m)));
+  if(s.names&&first&&c.side!=='right')col.append(h('div',{class:'who'},dispName(c,m)));
   if(m.reply){const o=findMsg(m.reply);if(o){const oc=ch(o.who),q=h('div',{class:'rp'},(oc?dispName(oc,o)+' · ':'')+previewText(o));if(oc)q.style.borderLeftColor=oc.color;col.append(q)}}
   const bw=h('div',{class:'bw'},t);if(m.react)bw.append(h('span',{class:'rx'},m.react));col.append(bw);
   if(s.times&&m.time)col.append(h('div',{class:'tmx'},m.time));
@@ -547,8 +547,9 @@ function parseScript(src){const out=[];let last=null;
  return out}
 function commit(items,o){o=o||{};let n=0;
  mut(()=>{let c=chap(),reuse=!c.msgs.length&&!o.newChap,firstC=null;
+  if(S.chapters.every(k=>!k.msgs.length)&&S.chars.every(x=>['a','b'].includes(x.id)))S.chars=[];
   const mk=t=>{const k={id:uid(),title:t,part:'',conv:'',sub:'',status:'draft',note:'',msgs:[]};S.chapters.push(k);return k};
-  const getC=nm=>{let x=S.chars.find(y=>y.name.toLowerCase()===nm.toLowerCase());if(!x){x={id:uid(),name:nm,color:PAL[S.chars.length%PAL.length],side:S.chars.length%2?'left':'right',emoji:'',av:'',note:''};S.chars.push(x)}return x};
+  const getC=nm=>{let x=S.chars.find(y=>y.name.toLowerCase()===nm.toLowerCase());if(!x){x={id:uid(),name:nm,color:PAL[S.chars.length%PAL.length],side:S.chars.some(y=>y.side==='right')?'left':'right',emoji:'',av:'',note:''};S.chars.push(x)}return x};
   if(o.newChap){c=mk(o.newChap);firstC=c}
   const nms=(mk,k)=>{const sg=convSegs(k).find(x=>x.mk===mk);return convParts({parts:mk.parts,msgs:sg?sg.msgs:[]}).map(x=>x.name.toLowerCase()).sort().join('|')};
   items.forEach(it=>{if(it.conv){const cv=it.conv,raw=cv.parts.split(/\s*,\s*|\s+et\s+/).map(x=>x.trim()).filter(Boolean),al={},alN={},names=raw.map(x=>{const q=x.match(/^(.+?)\s*[(（]\s*(.+?)\s*[)）]$/);if(q){alN[q[1].trim()]=q[2];return q[1].trim()}return x});names.forEach(getC);Object.entries(alN).forEach(([n,v])=>{al[getC(n).id]=v});
@@ -558,7 +559,9 @@ function commit(items,o){o=o||{};let n=0;
     if(!c.msgs.some(x=>x.who==='conv')&&c.msgs.length&&!c.msgs.some(x=>ch(x.who)))c.msgs.unshift(mkr);else c.msgs.push(mkr);return}
    if(it.chap!=null){if(reuse){c.title=it.chap;reuse=false;if(!firstC)firstC=c}else{c=mk(it.chap);if(!firstC)firstC=c}return}
    const m=Object.assign({id:uid()},it);if(it.name!=null){m.who=getC(it.name).id;delete m.name}c.msgs.push(m);n++});
-  if(firstC)S.cur=firstC.id});
+  if(firstC)S.cur=firstC.id;
+  const used=new Set();S.chapters.forEach(k=>k.msgs.forEach(m=>{used.add(m.who);if(m.who==='conv')(m.parts||'').split(',').forEach(x=>{const y=S.chars.find(z=>z.name.toLowerCase()===x.trim().toLowerCase());if(y)used.add(y.id)})}));
+  const keep=S.chars.filter(x=>used.has(x.id)||!['a','b'].includes(x.id));if(keep.length&&keep.length<S.chars.length){S.chars=keep;if(!ch(who))who=S.chars[0].id}});
  return n}
 function slash(c,a){const need=()=>{if(!ch(who)){toast('Choisissez d’abord un personnage.');return false}return true};
  switch(c){
@@ -822,7 +825,7 @@ addEventListener('visibilitychange',()=>{if(document.hidden)flush()});addEventLi
 /* ═════ Conversations ═════ */
 function convLabel(mk,c){const sg=convSegs(c).find(x=>x.mk===mk);const nm=mk.name||convParts({parts:mk.parts,msgs:sg?sg.msgs:[]}).map(x=>x.name).join(' et ');return nm||'Conversation'}
 function convBanner(m,cx){const c=S.chapters.find(x=>x.msgs.includes(m))||chap(),res=convIsResume(m),n=convSegs(c).filter(x=>x.mk).findIndex(x=>x.mk===m)+1;
- const el=h('div',{class:'it c','data-mid':m.id}),b=h('div',{class:'cvb'},[h('span',{class:'cvn'},'💬 '+convLabel(m,c)),h('small',{},(res?'↺ reprise · ':'')+'conversation '+n+(m.sub?' · '+m.sub:''))]);
+ const el=h('div',{class:'it c','data-mid':m.id}),b=h('div',{class:'cvb'},[h('span',{class:'cvn',style:'font-weight:600;margin-right:8px'},'💬 '+convLabel(m,c)),h('small',{style:'opacity:.7'},(res?'↺ reprise · ':'')+'conversation '+n+(m.sub?' · '+m.sub:''))]);
  b.setAttribute('style','border:1px dashed '+cx.th.line+';border-radius:12px;padding:7px 14px;text-align:center;font-size:.85em;color:'+cx.th.ink+';background:'+cx.th.panel);
  el.append(b);
  if(cx.edit)el.append(h('div',{class:'ctl'},[h('button',{title:'Modifier la conversation',onclick:e=>{e.stopPropagation();editConv(m)}},'✎'),
