@@ -43,6 +43,7 @@
     <tr><td>Un chapitre</td><td><code># Titre</code></td><td><code># Jour 3 — Pompon</code></td></tr>
     <tr><td>Une conversation</td><td><code>=== Nom1, Nom2 | Nom affiché | sous-titre</code></td><td><code>=== Chloé, Léa | Bestie 🚨 | en ligne</code></td></tr>
     <tr><td>Le nom enregistré dans le téléphone</td><td><code>=== Nom1, Nom2 (Nom affiché)</code></td><td><code>=== Chloé, Mathis (Numéro Inconnu)</code></td></tr>
+    <tr><td>Le téléphone de quelqu’un d’autre (ses bulles à droite)</td><td><code>=== @Nom1, Nom2 | …</code></td><td><code>=== @Mathis, Hugo | Coloc &amp; Co</code></td></tr>
     <tr><td>Une reprise de conversation</td><td><code>=== reprise Nom1, Nom2</code></td><td><code>=== reprise Chloé, Mathis</code></td></tr>
     <tr><td>Un contact renommé</td><td>reprise avec un nouveau nom affiché</td><td><code>=== reprise Chloé, Mathis (Lui ✨) | Lui ✨</code></td></tr>
     <tr><td>Un horodatage</td><td><code>[texte]</code></td><td><code>[Mardi 21:14]</code></td></tr>
@@ -71,6 +72,8 @@
   <h2>Règles à respecter</h2>
   <ol class="rules">
    <li>Le prénom avant les deux-points est le vrai prénom du personnage, identique partout (24 caractères au plus : lettres, espaces, tirets, apostrophes, points). Un nouveau prénom crée un nouveau personnage.</li>
+   <li>Par défaut, le premier personnage du script tient le téléphone : ses bulles sont à droite. Dans une conversation vue depuis un autre téléphone, mettez <code>@</code> devant son propriétaire ; une reprise garde ce réglage.</li>
+   <li>Onglet Style → Couleurs : « Comme sur iPhone » met l’envoyé en bleu et le reçu en gris, et n’affiche les noms au-dessus des bulles que dans les groupes.</li>
    <li>Le nom de contact affiché dans un téléphone se règle seulement sur la ligne <code>===</code>, entre parenthèses. Une reprise sans parenthèses garde le dernier nom affiché.</li>
    <li>Une ligne sans préfixe se colle au message précédent. Elle ne doit donc pas commencer par <code>*</code>, <code>!</code>, <code>[</code>, <code>&gt;</code>, <code>#</code> ou <code>//</code>.</li>
    <li>Évitez un mot isolé suivi de deux-points en début de ligne (<code>Attention: …</code>) : il serait pris pour un personnage.</li>

@@ -23,6 +23,7 @@ Tu es un auteur de romans par messages (SMS, messageries) et un scénariste. Tu 
 | … avec nom d'en-tête et sous-titre | `=== Noms \| Nom affiché \| sous-titre` | `=== Chloé, Eliot, Marcus \| Les Trois Mousquetaires \| 3 participants` |
 | … avec le **nom enregistré dans le téléphone** (affiché au-dessus des bulles) | `=== Nom1, Nom2 (Nom affiché)` | `=== Chloé, Mathis (Numéro Inconnu) \| Numéro Inconnu \| +33 6 •• •• •• 47` |
 | Un **renommage de contact** | reprise avec le nouveau nom affiché | `=== reprise Chloé, Mathis (Lui ✨) \| Lui ✨` |
+| Une conversation vue depuis le **téléphone d'un autre personnage** | `=== @Propriétaire, Contact \| …` | `=== @Mathis, Hugo \| Coloc & Co` |
 | Une **reprise** d'une conversation déjà vue | `=== reprise Nom1, Nom2` | `=== reprise Chloé, Eliot` |
 | Un **horodatage** | `[texte]` | `[Mardi 21:14]` |
 | Un **message** | `Prénom: texte` | `Chloé: tu dors ?` |

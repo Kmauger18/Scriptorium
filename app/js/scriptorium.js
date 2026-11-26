@@ -34,10 +34,14 @@ function convSegs(c){const out=[];let cur={mk:null,msgs:[]};
 function convMarkers(){const r=[];S.chapters.forEach(c=>(c.msgs||[]).forEach(m=>{if(m.who==='conv')r.push({m,c})}));return r}
 function convIsResume(mk){const all=convMarkers();const i=all.findIndex(x=>x.m===mk);return i>0&&all.slice(0,i).some(x=>x.m.thread===mk.thread)}
 function convHist(mk){const acc=[];for(const c of S.chapters)for(const sg of convSegs(c)){if(sg.mk===mk)return acc;if(sg.mk&&sg.mk.thread===mk.thread)acc.push(...sg.msgs.filter(x=>x.who!=='note'&&x.who!=='conv'))}return acc}
-function convHeadChap(c,sg){const k=sg.mk;return{conv:k.name||'',parts:k.parts||'',sub:k.sub||'',msgs:sg.msgs,alias:k.alias||null}}
+function convHeadChap(c,sg){const k=sg.mk;return{conv:k.name||'',parts:k.parts||'',sub:k.sub||'',msgs:sg.msgs,alias:k.alias||null,me:k.me||''}}
 /* Noms affichés par conversation (ex. Mathis affiché « Numéro Inconnu » sur le téléphone de Chloé) */
 let ALIASC=null;
-function aliasOf(m){if(!ALIASC){ALIASC=new Map();S.chapters.forEach(c=>convSegs(c).forEach(sg=>{const a=sg.mk&&sg.mk.alias;if(a&&Object.keys(a).length)sg.msgs.forEach(x=>ALIASC.set(x.id,a))}))}return ALIASC.get(m.id)||null}
+function segOf(m){if(!m)return null;if(!ALIASC){ALIASC=new Map();S.chapters.forEach(c=>convSegs(c).forEach(sg=>{if(sg.mk)sg.msgs.forEach(x=>ALIASC.set(x.id,sg.mk))}))}return ALIASC.get(m.id)||null}
+function aliasOf(m){const k=segOf(m);return k&&k.alias&&Object.keys(k.alias).length?k.alias:null}
+/* Côté d'une bulle : le propriétaire du téléphone de la conversation (=== @Nom) est à droite, sinon réglage du personnage */
+function sideOf(c,m){const k=segOf(m);if(k&&k.me&&ch(k.me))return c.id===k.me?'right':'left';return c.side}
+function partsN(m){const k=segOf(m);if(!k)return 2;return convParts({parts:k.parts,msgs:[]}).length}
 const dispName=(c,m)=>{const a=m&&aliasOf(m);return(a&&c&&a[c.id])||(c&&c.name)||''};
 function aliasTxt(mk){const a=mk&&mk.alias||{};return Object.entries(a).map(([id,v])=>{const c=ch(id);return c?c.name+' = '+v:''}).filter(Boolean).join(', ')}
 function aliasParse(t){const o={};(t||'').split(',').forEach(x=>{const m=x.match(/^\s*(.+?)\s*=\s*(.+?)\s*$/);if(m){const c=S.chars.find(y=>y.name.toLowerCase()===m[1].toLowerCase());if(c)o[c.id]=m[2]}});return o}
@@ -51,7 +55,7 @@ const PAGES={'11x17':{w:110,h:170},A6:{w:105,h:148},B6:{w:125,h:176},A5:{w:148,h
 let A={},dirtyA=false;
 const addAsset=u=>{const id='a'+uid();A[id]=u;dirtyA=true;return id};
 const DEF=(kind,starter_)=>({v:4,kind:kind||'sms',meta:{title:'Mon livre',sub:'',author:'',dedic:'',epi:'',copy:'',blurb:'',thanks:'',about:'',year:new Date().getFullYear(),lang:'fr',cover:{style:KR[kind]?KR[kind].cover[0]:kind==='journal'?'cuir':kind==='spell'?'grimoire':kind==='ana'?'ana':'bulles',c1:KR[kind]?KR[kind].cover[1]:kind==='journal'?'#7a4b2a':kind==='spell'?'#2a1747':'#6d4aff',c2:KR[kind]?KR[kind].cover[2]:kind==='journal'?'#c9a24a':kind==='spell'?'#0d0a1f':'#12151c',img:''}},
- set:{style:'ios',theme:'auto',accent:'#6d4aff',fs:16,font:'sys',radius:20,width:82,gap:3,names:true,times:false,read:false,readText:'Lu',avatars:false,tails:true,header:true,status:false,wall:'none',wallc:'#f2f0ea',wallImg:'',enter:true,
+ set:{style:'ios',cmode:'perso',theme:'auto',accent:'#6d4aff',fs:16,font:'sys',radius:20,width:82,gap:3,names:true,times:false,read:false,readText:'Lu',avatars:false,tails:true,header:true,status:false,wall:'none',wallc:'#f2f0ea',wallImg:'',enter:true,
   page:'A5',margin:14,pnum:true,toc:true,cover:true,front:true,back:true,runhead:false,partpg:true,jfont:'caveat',jsize:24,jpaper:'ruled',jink:'#26263a',jline:true,jtape:true,spec:true,specPre:'arc',sh0:0,sh1:300,ss0:0,ss1:85,sl:30,specInk:true,specPaper:true,specTape:true,specStrip:true,evoDev:true,dev0:25,dev1:100,evoAge:true,age0:0,age1:55,janim:true,stheme:'parchemin',sfont:'fell',sfs:19,sdrop:true,smotion:true,sparts:true,sreveal:true,anaInk:'process',ghost:100,depth:4,afont:'serif',afs:17,anaNotice:true,anaCalib:true,sauto:true,anaMix:'normal',gmode:'kdp',paper:'white',cvPdf:true,recto:false,pnpos:'center',mirror:'off',bpm:90,palFade:55,dosReveal:true},
  cur:'c1',notes:'',goal:{target:300,day:'',base:0,last:0,log:{}},exp:0,
  chars:[{id:'a',name:'Léa',color:PAL[0],side:'right',emoji:'',av:'',note:''},{id:'b',name:'Tom',color:PAL[1],side:'left',emoji:'',av:'',note:''}],
@@ -209,10 +213,11 @@ function fmt(t){const out=[],re=/(\*\*[^*\n]+\*\*|\*[^*\n]+\*|~~[^~\n]+~~|__[^_\
  if(last<t.length)out.push(t.slice(last));return out}
 const isBig=t=>!!t&&t.length<=24&&/^[\p{Extended_Pictographic}‍️\u{1F3FB}-\u{1F3FF}\s]+$/u.test(t)&&Array.from(t.replace(/\s/g,'')).length<=8;
 function wave(seed,n){let x=0;for(const c of String(seed))x=(x*31+c.charCodeAt(0))>>>0;const o=[];for(let i=0;i<(n||26);i++){x=(x*1664525+1013904223)>>>0;o.push(5+(x>>>24)%17)}return o}
-function bst(c,th){const col=c.color,st=S.set.style;
+function bst(c,th,sd){const col=c.color,st=S.set.style;sd=sd||c.side;
+ if(S.set.cmode==='iphone'&&(st==='ios'||st==='msn'||st==='wa'))return sd==='right'?'background:#0A84FF;color:#ffffff':'background:#E9E9EB;color:#111111';
  if(st==='min')return'background:'+mix(col,th.bg,.13)+';color:'+th.ink+';border:1.5px solid '+col;
  if(st==='disc')return'color:inherit';
- if(st==='retro')return c.side==='right'?'background:#8fc37a;color:#14240d;border:2px solid #14240d':'background:#c9e6b4;color:#14240d;border:2px solid #14240d';
+ if(st==='retro')return sd==='right'?'background:#8fc37a;color:#14240d;border:2px solid #14240d':'background:#c9e6b4;color:#14240d;border:2px solid #14240d';
  return'background:'+col+';color:'+ink(col)}
 function avEl(c,src,nm){const e=h('i',{class:'avt'});e.style.background=c.color;e.style.color=ink(c.color);const u=c.av&&src(c.av);if(u)e.append(h('img',{src:u,alt:''}));else e.textContent=c.emoji||(nm||c.name||'?')[0].toUpperCase();return e}
 function convParts(c){let r=[];
@@ -221,18 +226,18 @@ function convParts(c){let r=[];
  if(!r.length)r=S.chars.slice(0,2);return r.slice(0,6)}
 function headEls(c,cx){const o=[],s=S.set;
  if(s.status)o.push(h('div',{class:'sb'},[h('span',{},'9:41'),h('span',{},'▂▄▆ ▮')]));
- if(s.header){const P0=convParts(c),PL=P0.filter(x=>x.side!=='right'),P=PL.length?PL:P0,al=c.alias||{},nm=c.conv||P.map(x=>al[x.id]||x.name).join(', ');
+ if(s.header){const P0=convParts(c),PL=P0.filter(x=>c.me&&ch(c.me)?x.id!==c.me:x.side!=='right'),P=PL.length?PL:P0,al=c.alias||{},nm=c.conv||P.map(x=>al[x.id]||x.name).join(', ');
   o.push(h('div',{class:'hd'},[h('div',{class:'avs2'},P.map(x=>{const i=h('i');i.style.background=x.color;i.style.color=ink(x.color);const u=x.av&&cx.src(x.av);if(u)i.append(h('img',{src:u,alt:''}));else i.textContent=x.emoji||(al[x.id]||x.name||'?')[0].toUpperCase();return i})),h('b',{},nm),c.sub?h('span',{},c.sub):null]))}
  return o}
 
 function node(m,i,L,cx){
  if(m.who==='conv')return convBanner(m,cx);
  const c=ch(m.who),kind=c?'msg':(SPECIAL.includes(m.who)?m.who:'narr'),prev=L[i-1],next=L[i+1],s=S.set;
- const first=!prev||prev.who!==m.who,last=!next||next.who!==m.who;
- const el=h('div',{class:'it '+(m.who==='rcpt'?'r rk':c?(c.side==='right'?'r':'l'):'c')+(first?' first':'')+(last?' last':''),'data-mid':m.id});
+ const first=!prev||prev.who!==m.who,last=!next||next.who!==m.who,sd=c?sideOf(c,m):'';
+ const el=h('div',{class:'it '+(m.who==='rcpt'?'r rk':c?(sd==='right'?'r':'l'):'c')+(first?' first':'')+(last?' last':''),'data-mid':m.id});
  let t;
  if(kind==='msg'){
-  t=h('div',{class:'b'});t.setAttribute('style',bst(c,cx.th));
+  t=h('div',{class:'b'});t.setAttribute('style',bst(c,cx.th,sd));
   const ty=m.type||'text',d=m.d||{};
   if(ty==='typing'){t.classList.add('dots');t.append(h('i'),h('i'),h('i'))}
   else if(ty==='img'){t.classList.add('img');const u=cx.src(m.img);if(u)t.append(h('img',{src:u,alt:d.alt||m.text||'Image envoyée'}));else{const cap=d.kind==='capture';const ph=h('div',{class:'imph'+(cap?' cap9':'')},[h('span',{class:'imi'},cap?'📱':'📷'),h('span',{class:'imt'},d.alt||(cap?'Capture d’écran':'Photo'))]);if(cx.edit){ph.title='Cliquer pour choisir l’image';ph.style.cursor='pointer';ph.onclick=async e=>{e.stopPropagation();const id=await pickImg(1100);if(id)mut(()=>{m.img=id})}}t.append(ph)}if(m.text)t.append(h('div',{class:'cap'},fmt(m.text)))}
@@ -250,13 +255,13 @@ function node(m,i,L,cx){
  if(kind!=='msg'){el.append(t)}
  else{
   const col=h('div',{class:'col'+(m.react?' re':'')});
-  if(s.names&&first&&c.side!=='right')col.append(h('div',{class:'who'},dispName(c,m)));
+  if(s.names&&first&&sd!=='right'&&!(s.cmode==='iphone'&&partsN(m)<=2))col.append(h('div',{class:'who'},dispName(c,m)));
   if(m.reply){const o=findMsg(m.reply);if(o){const oc=ch(o.who),q=h('div',{class:'rp'},(oc?dispName(oc,o)+' · ':'')+previewText(o));if(oc)q.style.borderLeftColor=oc.color;col.append(q)}}
   const bw=h('div',{class:'bw'},t);if(m.react)bw.append(h('span',{class:'rx'},m.react));col.append(bw);
   if(s.times&&m.time)col.append(h('div',{class:'tmx'},m.time));
   let av=null;
   if(s.avatars||s.style==='disc'){const slot=s.style==='disc'?first:last;av=slot?avEl(c,cx.src,dispName(c,m)):h('span',{class:'avs'})}
-  if(c.side==='right'){el.append(col);if(av)el.append(av)}else{if(av)el.append(av);el.append(col)}}
+  if(sd==='right'){el.append(col);if(av)el.append(av)}else{if(av)el.append(av);el.append(col)}}
  if(cx.edit)decorate(el,m,cx,kind==='msg');
  return el}
 
@@ -327,7 +332,7 @@ function scriptText(){if(S.kind!=='sms')return xText();const L=[];
 
  S.chapters.forEach(c=>{L.push('# '+(c.title||'Sans titre'));L.push('');
   c.msgs.forEach(m=>{const x=ch(m.who),t=m.type||'text',d=m.d||{};
-   if(m.who==='conv'){const sg=convSegs(c).find(x=>x.mk===m);L.push('','=== '+(convIsResume(m)?'reprise ':'')+convParts({parts:m.parts,msgs:sg?sg.msgs:[]}).map(x=>x.name+(m.alias&&m.alias[x.id]?' ('+m.alias[x.id]+')':'')).join(', ')+(m.name?' | '+m.name:'')+(m.sub?(m.name?'':' | ')+' | '+m.sub:''),'')}else if(m.who==='time')L.push('['+m.text+']');else if(m.who==='narr')L.push('* '+m.text);else if(m.who==='sys')L.push('! '+m.text);
+   if(m.who==='conv'){const sg=convSegs(c).find(x=>x.mk===m);L.push('','=== '+(convIsResume(m)?'reprise ':'')+convParts({parts:m.parts,msgs:sg?sg.msgs:[]}).map(x=>(m.me===x.id?'@':'')+x.name+(m.alias&&m.alias[x.id]?' ('+m.alias[x.id]+')':'')).join(', ')+(m.name?' | '+m.name:'')+(m.sub?(m.name?'':' | ')+' | '+m.sub:''),'')}else if(m.who==='time')L.push('['+m.text+']');else if(m.who==='narr')L.push('* '+m.text);else if(m.who==='sys')L.push('! '+m.text);
    else if(m.who==='sep')L.push('---');else if(m.who==='note')L.push('// '+m.text);else if(m.who==='rcpt')L.push('> '+m.text);
    else if(x){let b;
     if(t==='typing')b='...';else if(t==='img')b=d.alt!=null?'('+(d.kind==='capture'?'capture':'photo')+': '+d.alt+(m.text?' | '+m.text:'')+')':(m.text||'[image]');else if(t==='draft')b='(brouillon: '+(m.text||'')+')';else if(t==='voice')b='(vocal '+(d.dur||'0:10')+')';
@@ -552,10 +557,10 @@ function commit(items,o){o=o||{};let n=0;
   const getC=nm=>{let x=S.chars.find(y=>y.name.toLowerCase()===nm.toLowerCase());if(!x){x={id:uid(),name:nm,color:PAL[S.chars.length%PAL.length],side:S.chars.some(y=>y.side==='right')?'left':'right',emoji:'',av:'',note:''};S.chars.push(x)}return x};
   if(o.newChap){c=mk(o.newChap);firstC=c}
   const nms=(mk,k)=>{const sg=convSegs(k).find(x=>x.mk===mk);return convParts({parts:mk.parts,msgs:sg?sg.msgs:[]}).map(x=>x.name.toLowerCase()).sort().join('|')};
-  items.forEach(it=>{if(it.conv){const cv=it.conv,raw=cv.parts.split(/\s*,\s*|\s+et\s+/).map(x=>x.trim()).filter(Boolean),al={},alN={},names=raw.map(x=>{const q=x.match(/^(.+?)\s*[(（]\s*(.+?)\s*[)）]$/);if(q){alN[q[1].trim()]=q[2];return q[1].trim()}return x});names.forEach(getC);Object.entries(alN).forEach(([n,v])=>{al[getC(n).id]=v});
+  items.forEach(it=>{if(it.conv){const cv=it.conv,raw=cv.parts.split(/\s*,\s*|\s+et\s+/).map(x=>x.trim()).filter(Boolean),al={},alN={};let meN='';const names=raw.map(x=>{if(/^@/.test(x)){x=x.replace(/^@\s*/,'');meN=(x.match(/^(.+?)\s*[(（]/)||[0,x])[1].trim()}const q=x.match(/^(.+?)\s*[(（]\s*(.+?)\s*[)）]$/);if(q){alN[q[1].trim()]=q[2];return q[1].trim()}return x});names.forEach(getC);Object.entries(alN).forEach(([n,v])=>{al[getC(n).id]=v});const meId=meN?getC(meN).id:'';
     if(!c.msgs.some(x=>x.who==='conv')&&c.msgs.some(x=>ch(x.who))){const i0=uid();c.msgs.unshift({id:i0,who:'conv',text:'',thread:i0,name:c.conv||'',parts:c.parts||'',sub:c.sub||'',ctx:3})}
-    const id=uid(),mkr={id,who:'conv',text:'',thread:id,name:cv.name,parts:names.join(', '),sub:cv.sub,ctx:3,alias:al};
-    if(cv.resume){const key=names.map(x=>x.toLowerCase()).sort().join('|');const prev=convMarkers().filter(x=>nms(x.m,x.c)===key).pop();if(prev){mkr.thread=prev.m.thread;if(!Object.keys(al).length&&prev.m.alias)mkr.alias=Object.assign({},prev.m.alias);if(!cv.name&&prev.m.name&&!Object.keys(al).length){mkr.name=prev.m.name;if(!cv.sub)mkr.sub=prev.m.sub}}}
+    const id=uid(),mkr={id,who:'conv',text:'',thread:id,name:cv.name,parts:names.join(', '),sub:cv.sub,ctx:3,alias:al,me:meId};
+    if(cv.resume){const key=names.map(x=>x.toLowerCase()).sort().join('|');const prev=convMarkers().filter(x=>nms(x.m,x.c)===key).pop();if(prev){mkr.thread=prev.m.thread;if(!meId&&prev.m.me)mkr.me=prev.m.me;if(!Object.keys(al).length&&prev.m.alias)mkr.alias=Object.assign({},prev.m.alias);if(!cv.name&&prev.m.name&&!Object.keys(al).length){mkr.name=prev.m.name;if(!cv.sub)mkr.sub=prev.m.sub}}}
     if(!c.msgs.some(x=>x.who==='conv')&&c.msgs.length&&!c.msgs.some(x=>ch(x.who)))c.msgs.unshift(mkr);else c.msgs.push(mkr);return}
    if(it.chap!=null){if(reuse){c.title=it.chap;reuse=false;if(!firstC)firstC=c}else{c=mk(it.chap);if(!firstC)firstC=c}return}
    const m=Object.assign({id:uid()},it);if(it.name!=null){m.who=getC(it.name).id;delete m.name}c.msgs.push(m);n++});
@@ -697,7 +702,7 @@ function stopRead(){clearTimeout(RD.t);RD.run=false;if(RD.dot){RD.dot.remove();R
 function stepRead(){if(!RD.run)return;if(RD.i>=RD.els.length){stopRead();return}
  const e=RD.els[RD.i],m=RD.L[RD.i],sp=+$('#rsp').value,box=$('#rchat');
  const reveal=()=>{if(!RD.run)return;if(RD.dot){RD.dot.remove();RD.dot=null}e.classList.remove('hid');RD.i++;box.scrollTo({top:box.scrollHeight,behavior:'smooth'});RD.t=setTimeout(stepRead,(500+Math.min(bw(m),40)*90)/sp)};
- if(isChar(m)&&(!m.type||m.type==='text')){const d=node({id:'rdot',who:m.who,type:'typing',text:''},0,[],RD.cx);RD.dot=d;e.before(d);box.scrollTo({top:box.scrollHeight,behavior:'smooth'});RD.t=setTimeout(reveal,(600+Math.min(bw(m),30)*70)/sp)}
+ if(isChar(m)&&(!m.type||m.type==='text')){const d=node({id:m.id,who:m.who,type:'typing',text:''},0,[],RD.cx);RD.dot=d;e.before(d);box.scrollTo({top:box.scrollHeight,behavior:'smooth'});RD.t=setTimeout(reveal,(600+Math.min(bw(m),30)*70)/sp)}
  else reveal()}
 $('#rPlay').onclick=()=>{if(RD.run){stopRead();return}if(RD.i>=RD.els.length){RD.els.forEach(e=>e.classList.add('hid'));RD.i=0}RD.run=true;upBtn();stepRead()};
 $('#rNext').onclick=()=>{stopRead();if(RD.i>=RD.els.length){RD.els.forEach(e=>e.classList.add('hid'));RD.i=0}const e=RD.els[RD.i];if(e){e.classList.remove('hid');RD.i++;$('#rchat').scrollTop=1e7}};
@@ -834,8 +839,8 @@ function convBanner(m,cx){const c=S.chapters.find(x=>x.msgs.includes(m))||chap()
  return el}
 function mvConv(c,mk,d){const sg=convSegs(c),i=sg.findIndex(x=>x.mk===mk),j=i+d;if(i<0||j<0||j>=sg.length||(!sg[j].mk)){toast('Déjà en première ou dernière position.');return}
  mut(()=>{[sg[i],sg[j]]=[sg[j],sg[i]];c.msgs=[].concat(...sg.map(x=>(x.mk?[x.mk]:[]).concat(x.msgs)))})}
-async function editConv(m){const r=await ask('Conversation',[{k:'name',l:'Nom affiché en en-tête (vide = noms des participants)',v:m.name||''},{k:'parts',l:'Participants (noms séparés par des virgules ; vide = auto)',v:m.parts||'',ph:'ex. Chloé, Eliot'},{k:'sub',l:'Sous-titre',v:m.sub||''},{k:'al',l:'Noms affichés dans cette conversation (ex. Mathis = Numéro Inconnu)',v:aliasTxt(m)},{k:'ctx',l:'Messages d’avant rappelés en PDF/web si c’est une reprise',t:'number',v:m.ctx==null?3:m.ctx}],'Enregistrer');
- if(r)mut(()=>{m.name=r.name;m.parts=r.parts;m.sub=r.sub;m.alias=aliasParse(r.al);m.ctx=Math.max(0,Math.min(30,r.ctx|0))})}
+async function editConv(m){const r=await ask('Conversation',[{k:'name',l:'Nom affiché en en-tête (vide = noms des participants)',v:m.name||''},{k:'parts',l:'Participants (noms séparés par des virgules ; vide = auto)',v:m.parts||'',ph:'ex. Chloé, Eliot'},{k:'sub',l:'Sous-titre',v:m.sub||''},{k:'al',l:'Noms affichés dans cette conversation (ex. Mathis = Numéro Inconnu)',v:aliasTxt(m)},{k:'me',l:'Téléphone de… (ses bulles à droite ; vide = côtés des personnages)',t:'select',o:[['','—'],...S.chars.map(x=>[x.id,x.name])],v:m.me||''},{k:'ctx',l:'Messages d’avant rappelés en PDF/web si c’est une reprise',t:'number',v:m.ctx==null?3:m.ctx}],'Enregistrer');
+ if(r)mut(()=>{m.name=r.name;m.parts=r.parts;m.sub=r.sub;m.alias=aliasParse(r.al);m.me=r.me||'';m.ctx=Math.max(0,Math.min(30,r.ctx|0))})}
 async function addConv(o){const c=chap();if(!c)return;o=o||{};
  const th=[];convMarkers().forEach(x=>{if(!th.some(t=>t.thread===x.m.thread))th.push({thread:x.m.thread,m:x.m,c:x.c})});
  let thread=null,base=null;
@@ -847,7 +852,7 @@ async function addConv(o){const c=chap();if(!c)return;o=o||{};
  const r=await ask(base?'Reprise de la conversation':'Nouvelle conversation',[{k:'name',l:'Nom affiché en en-tête (vide = noms des participants)',v:d.name},{k:'parts',l:'Participants (noms séparés par des virgules ; vide = auto)',v:d.parts,ph:'ex. Chloé, Eliot'},{k:'sub',l:'Sous-titre',v:d.sub}].concat(base?[{k:'ctx',l:'Messages d’avant à rappeler (PDF/web) — la vidéo rejoue toute la conversation',t:'number',v:3}]:[]),'Ajouter');
  if(!r)return;
  mut(()=>{if(!c.msgs.some(x=>x.who==='conv')&&c.msgs.length){const id0=uid();c.msgs.unshift({id:id0,who:'conv',text:'',thread:id0,name:c.conv||'',parts:c.parts||'',sub:c.sub||'',ctx:3})}
-  const id=uid();c.msgs.push({id,who:'conv',text:'',thread:thread||id,name:r.name,parts:r.parts,sub:r.sub,alias:base&&base.alias?Object.assign({},base.alias):{},ctx:base?Math.max(0,Math.min(30,r.ctx|0)):3})});
+  const id=uid();c.msgs.push({id,who:'conv',text:'',thread:thread||id,name:r.name,parts:r.parts,sub:r.sub,alias:base&&base.alias?Object.assign({},base.alias):{},me:base&&base.me||'',ctx:base?Math.max(0,Math.min(30,r.ctx|0)):3})});
  toast(base?'Reprise ajoutée à la fin du chapitre. Écrivez la suite de la conversation.':'Nouvelle conversation ajoutée à la fin du chapitre.')}
 
 function goConv(c,mk){S.cur=c.id;SEL.clear();INS=null;save();view='write';setView('write');all();setTimeout(()=>{const n=document.querySelector('#chat [data-mid="'+mk.id+'"]');if(n)n.scrollIntoView({block:'start'})},80)}
@@ -1805,7 +1810,7 @@ async function exportVideo(){
     const cc=ch(m.who);
     if(!it.pre&&r.typing&&cc&&!SPECIAL.includes(m.who)&&m.type!=='typing'){
      const first=!L[i-1]||L[i-1].who!==m.who,key=m.who+first;
-     if(!tyc[key]){tyc[key]=[];const Lt=L.slice(0,i).concat([{id:'_ty',who:m.who,type:'typing',text:''}]);
+     if(!tyc[key]){tyc[key]=[];const Lt=L.slice(0,i).concat([{id:m.id,who:m.who,type:'typing',text:''}]);
       for(let v=0;v<3;v++){const tn=node(Lt[i],i,Lt,cx);tn.querySelectorAll('.dots i').forEach((d,j)=>{d.style.opacity=j===v?'1':'.3'});
        tyc[key].push(await vRast([tn],{th,css,k,pg:true,pgStyle:'padding:0 14px;min-height:0;background:none'}))}}
      it.tys=tyc[key];it.tyh=tyc[key][0].h}
