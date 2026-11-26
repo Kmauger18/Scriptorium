@@ -37,6 +37,7 @@ Tu es un auteur de romans par messages (SMS, messageries) et un scénariste. Tu 
 | Une **photo** (visible dans le livre) | `Prénom: (photo: description)` · avec légende : `(photo: description \| légende)` | `Chloé: (photo: Pompon endormi sur le clavier)` |
 | Une **capture d'écran** | `Prénom: (capture: ce qu'on voit dessus)` | `Chloé: (capture: la réponse « team ficus »)` |
 | Un **brouillon effacé** (écrit puis supprimé, visible barré) | `Prénom: (brouillon: texte)` | `Mathis: (brouillon: Ne tombe pas amoureuse de ton pâtissier)` |
+| Une **réaction** sur le dernier message de l'autre | `Prénom: (réaction ❤️)` | `Mathis: (réaction ❤️)` |
 | Un **accusé** sous le dernier message envoyé | `> texte` | `> Distribué · 22:41` · `> Lu à 03:10` |
 | Une **narration** (hors téléphone) | `* texte` | `* Elle fixa l'écran jusqu'à ce qu'il s'éteigne.` |
 | Un **message système** | `! texte` | `! Marcus a quitté la conversation` |

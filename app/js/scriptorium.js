@@ -537,13 +537,14 @@ function parseScript(src){const out=[];let last=null;
   else if(m=l.match(/^([^:：\n]{1,24}?)\s*[:：]\s*(.+)$/)){const n=m[1].trim(),known=S.chars.some(c=>c.name.toLowerCase()===n.toLowerCase()),okName=/^[\p{L}][\p{L}\p{M}'’\- .]{0,22}$/u.test(n);
    if(known||okName){const it={name:n,text:m[2]},t=m[2].trim();let q;
     if(/^(\.{3}|…)$/.test(t)){it.type='typing';it.text=''}
-    else if(q=t.match(/^\((vocal|appel|visio|lieu|fichier|lien|photo|image|capture|brouillon)(?:\s*:?\s*([\s\S]*))?\)$/i)){const k=q[1].toLowerCase(),a=(q[2]||'').trim();it.text='';
+    else if(q=t.match(/^\((vocal|appel|visio|lieu|fichier|lien|photo|image|capture|brouillon|réaction|reaction)(?:\s*:?\s*([\s\S]*))?\)$/i)){const k=q[1].toLowerCase(),a=(q[2]||'').trim();it.text='';
      if(k==='vocal'){it.type='voice';it.d={dur:a||'0:10'}}
      else if(k==='appel'||k==='visio'){it.type='call';it.d={kind:k==='visio'?'video':'vocal',miss:/manqu/i.test(a),dur:a.replace(/manqu\S*/i,'').trim()}}
      else if(k==='lieu'){it.type='loc';it.d={name:a||'Position partagée'}}
      else if(k==='fichier'){it.type='file';it.d={name:a||'document.pdf',size:''}}
      else if(k==='photo'||k==='image'||k==='capture'){const[p,r]=a.split('|');it.type='img';it.d={kind:k==='capture'?'capture':'photo',alt:(p||'').trim()};it.text=(r||'').trim()}
      else if(k==='brouillon'){it.type='draft';it.text=a}
+     else if(k==='réaction'||k==='reaction'){it.type='react';it.text=a||'❤️'}
      else{const[p,r]=a.split('|');it.type='link';it.d={title:(p||'Lien').trim(),dom:(r||'').trim()}}}
     out.push(it);last=it}
    else if(last&&last.text!=null){last.text+='\n'+l}else{out.push({who:'narr',text:l});last=out[out.length-1]}}
@@ -563,6 +564,7 @@ function commit(items,o){o=o||{};let n=0;
     if(cv.resume){const key=names.map(x=>x.toLowerCase()).sort().join('|');const prev=convMarkers().filter(x=>nms(x.m,x.c)===key).pop();if(prev){mkr.thread=prev.m.thread;if(!meId&&prev.m.me)mkr.me=prev.m.me;if(!Object.keys(al).length&&prev.m.alias)mkr.alias=Object.assign({},prev.m.alias);if(!cv.name&&prev.m.name&&!Object.keys(al).length){mkr.name=prev.m.name;if(!cv.sub)mkr.sub=prev.m.sub}}}
     if(!c.msgs.some(x=>x.who==='conv')&&c.msgs.length&&!c.msgs.some(x=>ch(x.who)))c.msgs.unshift(mkr);else c.msgs.push(mkr);return}
    if(it.chap!=null){if(reuse){c.title=it.chap;reuse=false;if(!firstC)firstC=c}else{c=mk(it.chap);if(!firstC)firstC=c}return}
+   if(it.type==='react'){const rw=it.name!=null?getC(it.name).id:'';for(let j=c.msgs.length-1;j>=0;j--){const x=c.msgs[j];if(ch(x.who)&&x.who!==rw&&x.type!=='typing'&&x.type!=='draft'){x.react=it.text;break}}return}
    const m=Object.assign({id:uid()},it);if(it.name!=null){m.who=getC(it.name).id;delete m.name}c.msgs.push(m);n++});
   if(firstC)S.cur=firstC.id;
   const used=new Set();S.chapters.forEach(k=>k.msgs.forEach(m=>{used.add(m.who);if(m.who==='conv')(m.parts||'').split(',').forEach(x=>{const y=S.chars.find(z=>z.name.toLowerCase()===x.trim().toLowerCase());if(y)used.add(y.id)})}));

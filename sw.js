@@ -1,5 +1,5 @@
 /* Scriptorium — fonctionnement hors ligne. Changez VERSION à chaque mise à jour du site. */
-const VERSION = 'scriptorium-v4';
+const VERSION = 'scriptorium-v5';
 const FILES = ['./', './index.html', './guide/', './guide/index.html', './app/', './app/index.html',
   './app/css/scriptorium.css', './app/js/fonts.js', './app/js/scriptorium.js',
   './assets/icon.svg', './assets/site.css', './manifest.webmanifest', './docs/prompt-roman-sms.md'];
