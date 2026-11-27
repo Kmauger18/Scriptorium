@@ -55,7 +55,7 @@ const PAGES={'11x17':{w:110,h:170},A6:{w:105,h:148},B6:{w:125,h:176},A5:{w:148,h
 let A={},dirtyA=false;
 const addAsset=u=>{const id='a'+uid();A[id]=u;dirtyA=true;return id};
 const DEF=(kind,starter_)=>({v:4,kind:kind||'sms',meta:{title:'Mon livre',sub:'',author:'',dedic:'',epi:'',copy:'',blurb:'',thanks:'',about:'',year:new Date().getFullYear(),lang:'fr',cover:{style:KR[kind]?KR[kind].cover[0]:kind==='journal'?'cuir':kind==='spell'?'grimoire':kind==='ana'?'ana':'bulles',c1:KR[kind]?KR[kind].cover[1]:kind==='journal'?'#7a4b2a':kind==='spell'?'#2a1747':'#6d4aff',c2:KR[kind]?KR[kind].cover[2]:kind==='journal'?'#c9a24a':kind==='spell'?'#0d0a1f':'#12151c',img:''}},
- set:{style:'ios',cmode:'perso',autoNotif:false,batt:82,phoneTag:true,convPage:true,theme:'auto',accent:'#6d4aff',fs:16,font:'sys',radius:20,width:82,gap:3,names:true,times:false,read:false,readText:'Lu',avatars:false,tails:true,header:true,status:false,wall:'none',wallc:'#f2f0ea',wallImg:'',enter:true,
+ set:{style:'ios',cmode:'perso',autoNotif:false,batt:82,phoneTag:true,convPage:true,recap:3,theme:'auto',accent:'#6d4aff',fs:16,font:'sys',radius:20,width:82,gap:3,names:true,times:false,read:false,readText:'Lu',avatars:false,tails:true,header:true,status:false,wall:'none',wallc:'#f2f0ea',wallImg:'',enter:true,
   page:'A5',margin:14,pnum:true,toc:true,cover:true,front:true,back:true,runhead:false,partpg:true,jfont:'caveat',jsize:24,jpaper:'ruled',jink:'#26263a',jline:true,jtape:true,spec:true,specPre:'arc',sh0:0,sh1:300,ss0:0,ss1:85,sl:30,specInk:true,specPaper:true,specTape:true,specStrip:true,evoDev:true,dev0:25,dev1:100,evoAge:true,age0:0,age1:55,janim:true,stheme:'parchemin',sfont:'fell',sfs:19,sdrop:true,smotion:true,sparts:true,sreveal:true,anaInk:'process',ghost:100,depth:4,afont:'serif',afs:17,anaNotice:true,anaCalib:true,sauto:true,anaMix:'normal',gmode:'kdp',paper:'white',cvPdf:true,recto:false,pnpos:'center',mirror:'off',bpm:90,palFade:55,dosReveal:true},
  cur:'c1',notes:'',goal:{target:300,day:'',base:0,last:0,log:{}},exp:0,
  chars:[{id:'a',name:'Léa',color:PAL[0],side:'right',emoji:'',av:'',note:''},{id:'b',name:'Tom',color:PAL[1],side:'left',emoji:'',av:'',note:''}],
@@ -350,7 +350,7 @@ function buildBook(cx){
    if(si>0)sec.append(s.convPage!==false?h('div',{class:'sbr cvbk',style:'height:0;break-before:page;page-break-before:always'}):h('div',{class:'cvsep','aria-hidden':'true'}));
    const ph=phoneOf(ownerOf(sg.mk));if(s.phoneTag!==false&&multiPhones())he.unshift(phTagEl(ph));if(ph.dark)he.forEach(e=>e.classList.add('phd'));he.forEach(e=>sec.append(e));
    const P=h('div',{class:'pg'+(ph.dark?' phd':'')}),cx2={th:cx.th,src:cx.src,edit:false,msgs:L};
-   if(sg.mk){const H=convHist(sg.mk);if(H.length)recapInto(P,H.slice(-(sg.mk.ctx==null?3:sg.mk.ctx)),cx2)}
+   if(sg.mk){const H=convHist(sg.mk);const nR=Math.min(sg.mk.ctx==null?3:+sg.mk.ctx,s.recap==null?3:+s.recap);if(H.length&&nR>0)recapInto(P,H.slice(-nR),cx2)}
    listInto(P,L,cx2);if(s.autoNotif){const an=autoNotif(c,si);if(an){const w=h('div',{class:'it c nfw'});w.append(notifEl(an.from,an.app,an.text));P.append(w)}}sec.append(P)})});
  if(s.back){
   if(m.blurb)sh('back',[h('h2',{},'Résumé'),h('p',{class:'pre'},m.blurb)],null,'back');
@@ -1333,6 +1333,12 @@ const textLen=el=>textNodes(el).reduce((s,t)=>s+t.length,0);
 function truncate(orig,k){const c=orig.cloneNode(true);let left=k;textNodes(c).forEach(t=>{if(left<=0)t.remove();else if(t.length>left){t.textContent=t.textContent.slice(0,left);left=0}else left-=t.length});return c}
 function dropHead(orig,k){const c=orig.cloneNode(true);let first=true;textNodes(c).forEach(t=>{if(k>=t.length){k-=t.length;t.remove()}else{if(k>0){t.textContent=t.textContent.slice(k);k=0}if(first){t.textContent=t.textContent.replace(/^\s+/,'');first=false}}});return c}
 const splittable=el=>el.matches&&el.matches('p,.sp,.jt,blockquote,li')&&!el.matches('.ap,.ly,.sbr,.ddoc');
+const isHead=n=>!!(n&&n.matches&&n.matches('.cvsep,.phtag,.sb,.hd,h2,.ptag'));
+/* Garde un en-tête de conversation (étiquette, barre d'état, nom) avec ses premiers messages : jamais seul en bas de page */
+function probeFits(pg,items){const before=new Set(pg._map.keys()),placed=[];
+ for(const it of items){const m=mountFor(pg,it.chain);m.append(it.node);placed.push(it.node)}
+ const ok=fitsIn(pg,placed[placed.length-1]);placed.forEach(n=>n.remove());
+ for(const k of [...pg._map.keys()])if(!before.has(k)){const c=pg._map.get(k);c.remove();pg._map.delete(k)}return ok}
 function fitsIn(pg,node){const r=node.getBoundingClientRect(),b=pg._box.getBoundingClientRect();return r.bottom<=b.bottom+.5}
 function splitFit(pg,mount,node){const orig=node.cloneNode(true);mount.removeChild(node);const total=textLen(orig);let lo=1,hi=total-1,best=0;
  while(lo<=hi){const mid=(lo+hi)>>1,t=truncate(orig,mid);mount.append(t);const ok=fitsIn(pg,t);mount.removeChild(t);if(ok){best=mid;lo=mid+1}else hi=mid-1}
@@ -1353,8 +1359,9 @@ function layout(cx,n){
   pg=add(g);if(sh.id)pg.id=sh.id;
   if(ci&&/(^| )chp( |$)/.test(cl)){const c=S.chapters[+ci[1]];if(c)map[c.id]=pages.length}
   if(/(^| )toc( |$)/.test(cl))map.toc=pages.length;
-  flat(sh).forEach(({node,chain})=>{
+  const F=flat(sh);F.forEach(({node,chain},ix)=>{
    if(node.matches&&node.matches('.sbr')){if(pg._n)pg=add(g);return}
+   if(pg._n&&isHead(node)&&!(ix>0&&isHead(F[ix-1].node))){const grp=[];let j=ix,k=0;while(j<F.length&&isHead(F[j].node))grp.push(F[j++]);while(j<F.length&&k<2){if(!(F[j].node.matches&&F[j].node.matches('.sbr')))grp.push(F[j]);j++;k++}if(!probeFits(pg,grp))pg=add(g)}
    for(let guard=0;guard<500;guard++){
     const mount=mountFor(pg,chain);mount.append(node);
     if(fitsIn(pg,node)||!pg._n){pg._n++;return}

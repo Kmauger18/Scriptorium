@@ -1,5 +1,5 @@
 /* Scriptorium — fonctionnement hors ligne. Changez VERSION à chaque mise à jour du site. */
-const VERSION = 'scriptorium-v9';
+const VERSION = 'scriptorium-v10';
 const FILES = ['./', './index.html', './guide/', './guide/index.html', './app/', './app/index.html',
   './app/css/scriptorium.css', './app/js/fonts.js', './app/js/scriptorium.js', './app/js/cloud.js',
   './assets/icon.svg', './assets/site.css', './manifest.webmanifest'];
