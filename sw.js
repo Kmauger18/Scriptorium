@@ -1,8 +1,8 @@
 /* Scriptorium — fonctionnement hors ligne. Changez VERSION à chaque mise à jour du site. */
-const VERSION = 'scriptorium-v5';
+const VERSION = 'scriptorium-v6';
 const FILES = ['./', './index.html', './guide/', './guide/index.html', './app/', './app/index.html',
   './app/css/scriptorium.css', './app/js/fonts.js', './app/js/scriptorium.js',
-  './assets/icon.svg', './assets/site.css', './manifest.webmanifest', './docs/prompt-roman-sms.md'];
+  './assets/icon.svg', './assets/site.css', './manifest.webmanifest'];
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(FILES)).then(() => self.skipWaiting()));
 });

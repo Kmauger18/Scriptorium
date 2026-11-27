@@ -11,7 +11,6 @@ L’atelier d’écriture de livres de Kéliann Mauger : romans SMS, journaux ma
 | `index.html` | Page d’accueil |
 | `guide/` | Guide de l’atelier et syntaxe des scripts |
 | `app/` | L’atelier (HTML, `css/scriptorium.css`, `js/scriptorium.js`, `js/fonts.js` pour les polices embarquées) |
-| `docs/prompt-roman-sms.md` | Prompt pour faire écrire un script de roman SMS par une IA |
 | `assets/` | Icône et styles du site |
 | `manifest.webmanifest`, `sw.js` | Installation comme application et fonctionnement hors ligne |
 

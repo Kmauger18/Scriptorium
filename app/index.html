@@ -48,6 +48,7 @@
   <div class="two"><label>Année<input type="number" data-b="meta.year"></label>
    <label>Langue<select data-b="meta.lang"><option value="fr">Français</option><option value="en">English</option><option value="es">Español</option><option value="de">Deutsch</option><option value="it">Italiano</option></select></label></div>
   <h4>Couverture</h4>
+  <button class="pri" id="bCover" style="width:100%;margin-bottom:8px">🎨 Éditer la couverture complète (1ʳᵉ, tranche, 4ᵉ)</button>
   <label>Modèle<select data-b="meta.cover.style" id="covSel"></select></label>
   <div class="two"><label>Couleur 1<input type="color" data-b="meta.cover.c1"></label><label>Couleur 2<input type="color" data-b="meta.cover.c2"></label></div>
   <div class="tools"><button id="bCvImg">Choisir une image</button><button id="bCvNo">Retirer l’image</button></div>
@@ -94,7 +95,10 @@
   <input data-b="set.readText" placeholder="Texte de l’accusé (Lu, Vu, Distribué…)" aria-label="Texte de l’accusé">
   <h4>Conversation</h4>
   <label class="ck"><input type="checkbox" data-b="set.header"> En-tête (contact, avatars)</label>
-  <label class="ck"><input type="checkbox" data-b="set.status"> Barre d’état du téléphone</label>
+  <label class="ck"><input type="checkbox" data-b="set.status"> Barre d’état iPhone (heure du script, réseau, batterie)</label>
+  <label>Batterie au début du livre (%)<input type="number" min="1" max="100" data-b="set.batt"></label>
+  <label class="ck"><input type="checkbox" data-b="set.autoNotif"> Notification en fin de conversation quand le message suivant arrive d’une autre conversation</label>
+  <label class="ck"><input type="checkbox" data-b="set.phoneTag"> Étiquette « 📱 Téléphone de … » quand le livre passe d’un téléphone à l’autre (réglez chaque téléphone avec 📱 dans Persos)</label>
   <label>Fond<select data-b="set.wall"><option value="none">Aucun</option><option value="color">Couleur unie</option><option value="dots">Pois</option><option value="grid">Quadrillage</option><option value="diag">Rayures</option><option value="image">Image</option></select></label>
   <label>Couleur du fond<input type="color" data-b="set.wallc"></label>
   <div class="tools"><button id="bWall">Image de fond…</button><button id="bWallNo">Retirer</button></div>
@@ -250,7 +254,7 @@
    <div id="rchat"><div id="rphone" class="bk"><div id="rpt"></div><div class="pg" id="rpage"></div></div></div>
   </section>
   <section class="view" id="vBook" hidden>
-   <div class="rbar"><b>Aperçu du livre</b><span class="small">Mise en page telle qu’exportée (PDF, EPUB, web).</span><span class="seg2" id="bkMode"><button data-m="flow">Continu</button><button data-m="pages">Pages</button><button data-m="spread">Double page</button></span><label class="small">Zoom <input type="range" id="bkZ" min="0" max="150" value="0" title="0 = ajusté"></label><span id="bkInfo" class="small"></span><span id="bkx"></span><button class="acc" id="bPrint2">Imprimer / PDF</button></div>
+   <div class="rbar"><b>Aperçu du livre</b><span class="small">Mise en page telle qu’exportée (PDF, EPUB, web).</span><span class="seg2" id="bkMode"><button data-m="flow">Continu</button><button data-m="pages">Pages</button><button data-m="spread">Double page</button></span><label class="small">Zoom <input type="range" id="bkZ" min="0" max="150" value="0" title="0 = ajusté"></label><span id="bkInfo" class="small"></span><span id="bkx"></span><button id="bCover2">🎨 Couverture</button><button class="acc" id="bPrint2">Imprimer / PDF</button></div>
    <div class="bwrap" id="bwrap"></div>
   </section>
  </div>

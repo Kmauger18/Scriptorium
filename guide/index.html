@@ -22,7 +22,7 @@
 <main class="band"><div class="wrap">
  <h1 style="font-size:clamp(36px,5vw,52px)">Guide de l’atelier</h1>
  <p class="lede">Tout ce qu’il faut pour écrire un roman SMS dans Scriptorium, à la main ou en collant un script.</p>
- <div class="toc"><a href="#demarrer">Démarrer</a><a href="#syntaxe">Syntaxe des scripts</a><a href="#regles">Règles</a><a href="#ia">Écrire avec une IA</a><a href="#sauvegarde">Sauvegarde</a><a href="#publier">Publier</a></div>
+ <div class="toc"><a href="#demarrer">Démarrer</a><a href="#syntaxe">Syntaxe des scripts</a><a href="#regles">Règles</a><a href="#sauvegarde">Sauvegarde</a><a href="#publier">Publier</a></div>
 
  <section class="gsec" id="demarrer">
   <h2>Démarrer</h2>
@@ -47,6 +47,8 @@
     <tr><td>Une reprise de conversation</td><td><code>=== reprise Nom1, Nom2</code></td><td><code>=== reprise Chloé, Mathis</code></td></tr>
     <tr><td>Un contact renommé</td><td>reprise avec un nouveau nom affiché</td><td><code>=== reprise Chloé, Mathis (Lui ✨) | Lui ✨</code></td></tr>
     <tr><td>Un horodatage</td><td><code>[texte]</code></td><td><code>[Mardi 21:14]</code></td></tr>
+    <tr><td>Une notification (bannière en haut de l’écran)</td><td><code>^ Expéditeur: texte</code> ou <code>^ App · Expéditeur: texte</code></td><td><code>^ Léa: t’es où ??</code><br><code>^ Instagram · lea.marchal: a aimé votre photo</code></td></tr>
+    <tr><td>Le niveau de batterie (barre d’état)</td><td><code>🔋 pourcentage</code></td><td><code>🔋 14</code></td></tr>
     <tr><td>Un message</td><td><code>Prénom: texte</code></td><td><code>Chloé: tu dors ?</code></td></tr>
     <tr><td>Un message sur plusieurs lignes</td><td>lignes suivantes sans préfixe</td><td><code>Mathis: Règles.</code> puis <code>1. Pas de prénoms.</code></td></tr>
     <tr><td>Quelqu’un qui écrit</td><td><code>Prénom: ...</code></td><td><code>Mathis: ...</code></td></tr>
@@ -84,12 +86,6 @@
   </ol>
  </section>
 
- <section class="gsec" id="ia">
-  <h2>Écrire avec une IA</h2>
-  <p>Le prompt « roman SMS » contient toute la syntaxe, les règles de style et une liste de vérification. Remplissez la section « Mon projet » en bas, puis collez-le dans votre IA : elle vous propose un plan, puis écrit le script chapitre par chapitre, prêt à coller dans l’atelier.</p>
-  <div class="cta"><a class="btn line" href="../docs/prompt-roman-sms.md">Ouvrir le prompt roman SMS</a></div>
- </section>
-
  <section class="gsec" id="sauvegarde">
   <h2>Sauvegarde</h2>
   <p>Vos livres sont enregistrés automatiquement dans le navigateur de cet appareil, et un point de restauration est créé toutes les quatre minutes (<b>Fichier → Historique des versions</b>). Si vous videz les données du navigateur, ils disparaissent : exportez régulièrement le livre en <b>.json</b>, c’est votre vraie sauvegarde. Le même fichier se réimporte sur un autre ordinateur.</p>
@@ -97,6 +93,13 @@
 
  <section class="gsec" id="publier">
   <h2>Publier</h2>
+  <h3>Téléphones, barre d’état et notifications</h3>
+  <p>Chaque conversation se passe sur le téléphone de quelqu’un (<code>=== @Mathis, …</code>, sinon le téléphone du personnage principal). Dans <b>Persos</b>, le bouton 📱 règle le téléphone de chaque personnage : clair ou sombre (par défaut, les autres téléphones que le principal sont sombres), couleur des bulles envoyées, fond d’écran. Le livre affiche alors une étiquette « 📱 Téléphone de … » et les pages des téléphones sombres sont noires.</p>
+  <p>Dans <b>Style</b>, la barre d’état iPhone suit l’heure des horodatages et la batterie des lignes <code>🔋</code>. L’option « Notification en fin de conversation » ajoute la bannière du message qui arrive dans la conversation suivante.</p>
+  <h3>Vidéo</h3>
+  <p>L’export MP4 reprend tout cela, avec des animations : carte titre à chaque nouveau jour, écran verrouillé quand on passe d’un téléphone à l’autre (avec le premier message reçu en notification, puis déverrouillage) et glissement d’une conversation à l’autre sur le même téléphone.</p>
+  <h3>Couverture</h3>
+  <p>Le bouton <b>🎨 Couverture</b> (aperçu du livre ou panneau Livre) ouvre la couverture complète à plat : 4ᵉ (résumé, image ou couleur, zone du code-barres), tranche (titre et auteur à partir de 80 pages) et 1ʳᵉ. La largeur de la tranche suit le nombre de pages : cliquez « Recalculer » au fur et à mesure que le livre avance, puis « Exporter la couverture complète (PDF) » pour KDP. Une image de 1ʳᵉ de couverture remplit maintenant toute la page.</p>
   <p>Dans <b>Livre</b>, choisissez le format (poche 11 × 17 cm pour un roman SMS), le papier et les marges. Le panneau Amazon KDP calcule la marge de reliure selon le nombre de pages, l’épaisseur de la tranche et la taille de la couverture à plat, et fournit un gabarit de couverture en SVG. Le bouton <b>Imprimer / PDF</b> produit le fichier intérieur ; l’onglet <b>Fichier</b> exporte aussi l’EPUB, la vidéo MP4, la page web et le script texte.</p>
  </section>
 </div></main>
