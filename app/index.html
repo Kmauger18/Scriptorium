@@ -216,6 +216,7 @@
    <button data-v="write" class="on">Écrire</button><button data-v="plan">Plan</button><button data-v="read">Lecture</button><button data-v="book">Livre</button>
   </div>
   <div class="sbox"><input class="srch" id="q" type="search" placeholder="Rechercher…" aria-label="Rechercher dans le livre"><span id="qc"></span><button class="ib sm" id="qp" aria-label="Résultat précédent"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button><button class="ib sm" id="qn" aria-label="Résultat suivant"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12l7 7 7-7"/></svg></button></div>
+  <button class="ib" id="bCloud" title="Sauvegarde dans le cloud" aria-label="Sauvegarde dans le cloud" onclick="Cloud.dlg()" style="font-size:16px">☁</button>
   <button class="ib" id="bUn" title="Annuler (Ctrl+Z)" aria-label="Annuler"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3"/></svg></button>
   <button class="ib" id="bRe" title="Rétablir (Ctrl+Maj+Z)" aria-label="Rétablir"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 14l5-5-5-5M20 9H10a6 6 0 000 12h3"/></svg></button>
   <button class="ib" id="bK" title="Palette de commandes (Ctrl+K)" aria-label="Palette de commandes"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6a3 3 0 10-3 3h12a3 3 0 10-3-3v12a3 3 0 103-3H6a3 3 0 103 3z"/></svg></button>
@@ -267,6 +268,7 @@
 <div id="pr"></div>
 <script src="js/fonts.js"></script>
 <script src="js/scriptorium.js"></script>
+<script src="js/cloud.js"></script>
 <script>if('serviceWorker' in navigator&&location.protocol.startsWith('http'))navigator.serviceWorker.register('../sw.js').catch(()=>{})</script>
 </body>
 </html>

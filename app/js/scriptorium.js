@@ -78,7 +78,7 @@ const ch=id=>S.chars.find(c=>c.id===id),chap=()=>S.chapters.find(c=>c.id===S.cur
 const isChar=m=>!SPECIAL.includes(m.who)&&!!ch(m.who);
 function findMsg(id){for(const c of S.chapters){const m=c.msgs.find(x=>x.id===id);if(m)return m}return null}
 function previewText(m){const t=m.type||'text',d=m.d||{};if(t==='photo')return'📷 '+(m.cap||'Polaroïd');if(t==='sticky')return'📝 '+(m.text||'');if(t==='break')return'↵ saut de page';if(t==='dual')return'◐ '+((m.a||m.b||'').slice(0,60));if(t==='dimg')return'◐ Image double'+(m.cap?' : '+m.cap:'');if(t==='both'||t==='title')return(m.text||'').slice(0,70);if(t==='sep')return'✦ ✦ ✦';return t==='draft'?'✎ Brouillon : '+(m.text||'').slice(0,60):t==='img'?(d.kind==='capture'?'📱 ':'📷 ')+(d.alt||'Photo'):t==='voice'?'🎤 Message vocal':t==='call'?'📞 Appel':t==='loc'?'📍 '+(d.name||'Position'):t==='link'?'🔗 '+(d.title||'Lien'):t==='file'?'📎 '+(d.name||'Fichier'):t==='typing'?'…':(m.text||'').replace(/\s+/g,' ').slice(0,70)}
-function usedAssets(){const u=new Set();S.chapters.forEach(c=>c.msgs.forEach(m=>{if(m.img)u.add(m.img);if(m.img2)u.add(m.img2)}));S.chars.forEach(c=>{if(c.av)u.add(c.av)});[S.meta.cover.img,S.set.wallImg].forEach(x=>x&&u.add(x));const o={};u.forEach(id=>{if(A[id])o[id]=A[id]});return o}
+function usedAssets(){const u=new Set();S.chapters.forEach(c=>c.msgs.forEach(m=>{if(m.img)u.add(m.img);if(m.img2)u.add(m.img2)}));S.chars.forEach(c=>{if(c.av)u.add(c.av)});[S.meta.cover.img,S.meta.cover.bimg,S.set.wallImg].forEach(x=>x&&u.add(x));const o={};u.forEach(id=>{if(A[id])o[id]=A[id]});return o}
 function words(){let w=0;S.chapters.forEach(c=>c.msgs.forEach(m=>{if(m.who!=='note')w+=bw(m)}));return w}
 
 /* ═════ Stockage (IndexedDB → localStorage → mémoire) ═════ */
@@ -92,6 +92,7 @@ let saveT=0,BID='',LIB=[];
 function save(){clearTimeout(saveT);const s=$('#svs');if(s)s.textContent='…';saveT=setTimeout(flush,400)}
 async function flush(){clearTimeout(saveT);if(!BID)return;let ok=await DB.set('b_'+BID,S);if(dirtyA){ok=(await DB.set('a_'+BID,A))&&ok;dirtyA=false}
  const e=LIB.find(x=>x.id===BID);if(e){e.title=S.meta.title||'Sans titre';e.kind=S.kind;e.t=Date.now();e.w=words();await DB.set('lib',LIB)}
+ if(typeof Cloud!=='undefined')Cloud.dirty();
  const s=$('#svs');if(s){s.textContent=ok?'Enregistré '+timeNow():'⚠ non enregistré';s.title=ok?'Sauvegarde automatique dans ce navigateur':'Stockage indisponible : exportez le livre (.json) !'}}
 let snapsC=null;
 async function snaps(){if(!snapsC)snapsC=(await DB.get('s_'+BID))||[];return snapsC}
@@ -1297,7 +1298,7 @@ async function homeShow(){if(BID)await flush();let H=$('#home');if(!H){H=h('div'
  H.replaceChildren(h('div',{class:'hw'},[h('h1',{},['Script',h('i',{},'orium')]),h('p',{class:'hs'},'L’atelier où chaque livre choisit sa façon d’être écrit.'),
   L.length?h('section',{},[h('h2',{},'Reprendre'),h('div',{class:'hg'},L.map(card))]):null,
   h('section',{},[h('h2',{},L.length?'Créer un nouveau livre':'Commencez par créer votre premier livre'),h('div',{class:'hg k'},kc)]),
-  h('div',{class:'hf'},[h('button',{type:'button',onclick:async()=>{const f=(await pickFile('.json,application/json'))[0];if(f)importBook(f)}},'⤒ Importer un livre (.json)'),BID?h('button',{type:'button',class:'acc',onclick:homeHide},'Retour au livre ouvert'):null])]))}
+  h('div',{class:'hf'},[h('button',{type:'button',onclick:async()=>{const f=(await pickFile('.json,application/json'))[0];if(f)importBook(f)}},'⤒ Importer un livre (.json)'),h('button',{type:'button',onclick:()=>Cloud.dlg()},'☁️ Mes livres dans le cloud'),BID?h('button',{type:'button',class:'acc',onclick:homeHide},'Retour au livre ouvert'):null])]))}
 
 /* ═════ Démarrage ═════ */
 async function boot(){
