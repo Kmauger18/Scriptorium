@@ -1,5 +1,6 @@
 rules_version = '2';
 // Projet Firebase commun « KMAUGER Apps » (Scriptorium, Mijote et les apps à venir).
+// Même fichier dans chaque dépôt (Scriptorium, Mijote…) : ce sont les règles uniques du projet.
 // Chaque utilisateur connecté ne peut lire et écrire que ses propres données : users/{son uid}/…
 service cloud.firestore {
   match /databases/{database}/documents {
