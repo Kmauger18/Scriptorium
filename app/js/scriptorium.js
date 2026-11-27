@@ -165,7 +165,7 @@ function bookCSS(s,th,P,noImg){
   a('.nf .nfi','flex:none;width:34px;height:34px;border-radius:8px;display:grid;place-items:center;font-size:18px;line-height:1');a('.nf .nfb','flex:1;min-width:0');a('.nf .nfh','display:flex;justify-content:space-between;font-size:.8em;opacity:.6;text-transform:uppercase;letter-spacing:.02em;margin-bottom:1px');a('.nf .nff','display:block;font-weight:600');a('.nf .nft','display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap')}
  a('.cvsep','height:0;margin:22px auto 18px;width:38%;border-top:1px dashed '+th.line);
  a('.phtag','display:flex;align-items:center;justify-content:center;gap:6px;margin:0 auto 6px;width:max-content;max-width:100%;padding:3px 12px 3px 8px;border-radius:999px;font:600 11px system-ui,-apple-system,sans-serif;letter-spacing:.02em;color:var(--phc);border:1.5px solid var(--phc);background:transparent');a('.phtag i','font-style:normal');
- a('.phd','background:#000!important;color:#f2f2f7');a('.pg.phd','border-radius:14px;padding-top:6px;padding-bottom:10px');a('.hd.phd','border-bottom-color:#2c2c2e;color:#8e8e93');a('.hd.phd b','color:#f2f2f7');a('.sb.phd','color:#f2f2f7');a('.sb.phd svg','color:#f2f2f7;fill:currentColor');
+ a('.phd','background:#000!important;color:#f2f2f7');a('.pg.phd','border-radius:14px;padding-top:6px;padding-bottom:10px');a('.hd.phd','border-bottom-color:#2c2c2e;color:#8e8e93');a('.hd.phd b','color:#f2f2f7');a('.sb.phd','color:#f2f2f7;border-radius:14px 14px 0 0');a('.sb.phd svg','color:#f2f2f7;fill:currentColor');
  a('.phtag.phd','background:#000!important;color:var(--phc)');a('.phd .it.c','color:#8e8e93');a('.phd .sys','color:#aeaeb2;background:rgba(255,255,255,.1)');a('.phd .nf','background:rgba(44,44,48,.97);color:#f2f2f7');a('.phd .tm,.phd .rk,.phd .rcpt','color:#8e8e93');
  a('.hd','display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 12px 9px;border-bottom:1px solid '+th.line+';background:'+th.panel+';color:'+th.mute+';font-size:12px');
  a('.hd .avs2','display:flex');
@@ -1370,7 +1370,7 @@ function layout(cx,n){
    if(s.pnum){const o=s.pnpos==='outer';p.append(h('div',{class:'pn '+(o?(i%2?'l':'r'):'c')},String(i+1)))}
    if(s.runhead){const c=/^c(\d+)$/.exec(g),t=i%2===0&&c&&S.chapters[+c[1]]?S.chapters[+c[1]].title:S.meta.title;p.append(h('div',{class:'rh'},t||''))}}});
  pages.forEach(p=>{const x=p._box.querySelector('.xc');if(x){const cs=getComputedStyle(x);['backgroundColor','backgroundImage','backgroundSize','backgroundPosition','backgroundRepeat'].forEach(k=>{p.style[k]=cs[k]});x.style.background='none';x.style.backgroundImage='none'}});
- pages.forEach(p=>{if(p._box.querySelector('.phd'))p.classList.add('pdark')});
+ if(s.convPage!==false)pages.forEach(p=>{if(p._box.querySelector('.phd'))p.classList.add('pdark')});
  host.remove();return{pages,cover,map,count:total}}
 
 function pagedBook(cx){let n=PG.count||40,res;
